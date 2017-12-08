@@ -1,0 +1,4 @@
+- Invalid map cases
+- Change window width and height depending on points
+- Create color progress
+- Hide invisible

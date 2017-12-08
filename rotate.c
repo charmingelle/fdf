@@ -38,18 +38,19 @@ void	rotate_point_z(t_point **point, int direction)
 
 void	rotate_point_set(t_env *env, void(*f)(t_point **, int), int direction)
 {
-	t_point	**points;
-	int		i;
+	t_point		**points;
+	t_point_row	*temp;
+	int			i;
 
-	while (env->point_set)
+	temp = env->point_set;
+	while (temp)
 	{
-		points = (env->point_set)->points;
 		i = 0;
-		while (points[i])
+		while (temp->points[i])
 		{
-			f(&(points[i]), direction);
+			f(&(temp->points[i]), direction);
 			i++;
 		}
-		env->point_set = (env->point_set)->next;
+		temp = temp->next;
 	}
 }

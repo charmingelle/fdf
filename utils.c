@@ -1,6 +1,22 @@
 #include "header.h"
 
-t_point			**get_points_from_z_coords(char **z_coords, int line_number)
+int				ft_min(int a, int b)
+{
+	if (a < b)
+		return (a);
+	return (b);
+}
+
+void			ft_swap(t_point **a, t_point **b)
+{
+	t_point	*c;
+
+	c = *a;
+	*a = *b;
+	*b = c;
+}
+
+t_point			**get_points_from_z_coords(char **z_coords, int row_number)
 {
 	t_point	**points;
 	int		amount;
@@ -9,12 +25,12 @@ t_point			**get_points_from_z_coords(char **z_coords, int line_number)
 	amount = 0;
 	while (z_coords[amount])
 		amount++;
-	if ((points = (t_point **)malloc(sizeof(t_point *) * (amount + 1))))
+	if (!(points = (t_point **)malloc(sizeof(t_point *) * (amount + 1))))
 		exit(1);
 	i = 0;
 	while (i < amount)
 	{
-		points[i] = create_point(line_number, i, ft_atoi(z_coords[i]));
+		points[i] = create_point(row_number * SEGMENT_LEN, i * SEGMENT_LEN, ft_atoi(z_coords[i]) * SEGMENT_LEN / 2);
 		i++;
 	}
 	points[i] = NULL;
@@ -31,23 +47,30 @@ void			free_z_coords(char **z_coords)
 	free(z_coords);
 }
 
-t_point_line	*create_point_set(int fd)
+t_point_row		*create_point_set(int fd)
 {
-	char			*line;
+	char			*row;
 	int				gnl_result;
 	char			**z_coords;
-	t_point_line	*point_line;
-	int				line_number;
+	int				row_number;
+	t_point_row		*point_row;
 
-	point_line = NULL;
-	line_number = 0;
-	while ((gnl_result = get_next_line(fd, &line)))
+	row_number = 0;
+	point_row = NULL;
+	while ((gnl_result = get_next_line(fd, &row)) > 0)
 	{
-		if (!(z_coords = ft_strsplit(line, ' ')))
+		if (!(z_coords = ft_strsplit(row, ' ')))
 			exit(1);
-		add_point_line(&point_line, get_points_from_z_coords(z_coords, line_number));
+		add_point_row(&point_row, get_points_from_z_coords(z_coords, row_number));
 		free_z_coords(z_coords);
-		line_number++;
+		row_number++;
 	}
-	return (point_line);
+	// printf("%p\n", point_row);
+	// while (point_row)
+	// {
+	// 	printf("here\n");
+	// 	print_point_row(point_row);
+	// 	point_row = point_row->next;
+	// }
+	return (point_row);
 }

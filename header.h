@@ -7,6 +7,7 @@
 #include <stdio.h>
 
 #define WHITE 0xAAAAAA
+#define GREEN 0x008000
 #define RED 0xFF0000
 #define LIME 0x00FF00
 #define BLUE 0x0000FF
@@ -21,6 +22,7 @@
 #define D 2
 #define Q 12
 #define E 14
+#define SEGMENT_LEN 20
 
 typedef struct	s_point
 {
@@ -29,19 +31,19 @@ typedef struct	s_point
 	int z;
 }				t_point;
 
-typedef struct	s_point_line
+typedef struct	s_point_row
 {
-	struct s_point_line	*prev;
+	// struct s_point_row	*prev;
 	t_point				**points;
-	struct s_point_line	*next;
-}				t_point_line;
+	struct s_point_row	*next;
+}				t_point_row;
 
 typedef struct	s_env {
 	void			*mlx;
 	void			*window;
 	int				width;
 	int				height;
-	t_point_line	*point_set;
+	t_point_row	*point_set;
 	int				color;
 }				t_env;
 
@@ -75,7 +77,7 @@ void			draw_point(t_env *env, t_point *point, int color);
 
 void			draw_axis(t_env *env, int color);
 
-void			draw_segment(t_env *env, t_point *p1, t_point *p2, int color);
+void			draw_segment(t_env *env, t_point *p1, t_point *p2);
 
 void			draw_graph(t_env *env, int(*f)(int), int start, int end, int color);
 
@@ -85,14 +87,26 @@ void			erase_point_set(t_env *env);
 
 void			draw_rotated(t_env *env, void(*f)(t_point **, int), int direction);
 
-int				count_lines(int fd);
-
-t_point			**get_points_from_z_coords(char **z_coords, int line_number);
+t_point			**get_points_from_z_coords(char **z_coords, int row_amount);
 
 void			free_z_coords(char **z_coords);
 
-t_point_line	*create_point_set(int fd);
+t_point_row		*create_point_set(int fd);
 
-t_point_line	*create_point_line(t_point **points);
+t_point_row		*create_point_row(t_point **points);
 
-void			add_point_line(t_point_line **point_line, t_point **points);
+void			add_point_row(t_point_row **point_row, t_point **points);
+
+void			ft_swap(t_point **a, t_point **b);
+
+int				ft_min(int a, int b);
+
+
+
+// funcs to delete
+
+void			print_point(t_point *point);
+
+void			print_point_row(t_point_row *point_row);
+
+///
