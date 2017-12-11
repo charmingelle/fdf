@@ -1,12 +1,5 @@
 #include "header.h"
 
-int				ft_min(int a, int b)
-{
-	if (a < b)
-		return (a);
-	return (b);
-}
-
 void			ft_swap(t_point **a, t_point **b)
 {
 	t_point	*c;
@@ -16,7 +9,7 @@ void			ft_swap(t_point **a, t_point **b)
 	*b = c;
 }
 
-t_point			**get_points_from_z_coords(char **z_coords, int row_number)
+t_point			**get_points_from_z_coords(char **z_coords, int row_number, int *width)
 {
 	t_point	**points;
 	int		amount;
@@ -25,6 +18,7 @@ t_point			**get_points_from_z_coords(char **z_coords, int row_number)
 	amount = 0;
 	while (z_coords[amount])
 		amount++;
+	*width = amount;
 	if (!(points = (t_point **)malloc(sizeof(t_point *) * (amount + 1))))
 		exit(1);
 	i = 0;
@@ -47,7 +41,7 @@ void			free_z_coords(char **z_coords)
 	free(z_coords);
 }
 
-t_point_row		*create_point_set(int fd)
+t_point_row		*create_point_set(int fd, int *width, int *height)
 {
 	char			*row;
 	int				gnl_result;
@@ -61,16 +55,10 @@ t_point_row		*create_point_set(int fd)
 	{
 		if (!(z_coords = ft_strsplit(row, ' ')))
 			exit(1);
-		add_point_row(&point_row, get_points_from_z_coords(z_coords, row_number));
+		add_point_row(&point_row, get_points_from_z_coords(z_coords, row_number, width));
 		free_z_coords(z_coords);
 		row_number++;
 	}
-	// printf("%p\n", point_row);
-	// while (point_row)
-	// {
-	// 	printf("here\n");
-	// 	print_point_row(point_row);
-	// 	point_row = point_row->next;
-	// }
+	*height = row_number;
 	return (point_row);
 }
