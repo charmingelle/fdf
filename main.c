@@ -17,28 +17,28 @@ int		handle_key_press(int keycode, t_env *env)
 		exit(0);
 	else if (keycode == A)
 	{
-		env->angle_x += DEGREE5;
+		env->angle_y -= DEGREE5;
 		mlx_clear_window(env->mlx, env->window);
 		draw_axis(env, WHITE);
 		draw(env);
 	}
 	else if (keycode == D)
 	{
-		env->angle_x -= DEGREE5;
+		env->angle_y += DEGREE5;
 		mlx_clear_window(env->mlx, env->window);
 		draw_axis(env, WHITE);
 		draw(env);
 	}
 	else if (keycode == W)
 	{
-		env->angle_y -= DEGREE5;
+		env->angle_x += DEGREE5;
 		mlx_clear_window(env->mlx, env->window);
 		draw_axis(env, WHITE);
 		draw(env);
 	}
 	else if (keycode == S)
 	{
-		env->angle_y += DEGREE5;
+		env->angle_x -= DEGREE5;
 		mlx_clear_window(env->mlx, env->window);
 		draw_axis(env, WHITE);
 		draw(env);
@@ -89,14 +89,17 @@ int		main(int argc, char **argv)
 	t_env	*env;
 	int		fd;
 
-	fd = open(argv[1], O_RDONLY);
-	if (fd == -1)
-		exit(1);
-	env = create_env(fd);
-	close(fd);
-	draw_axis(env, WHITE);
-	draw(env);
+	if (argc == 2)
+	{
+		fd = open(argv[1], O_RDONLY);
+		if (fd == -1)
+			exit(1);
+		env = create_env(fd);
+		close(fd);
+		draw_axis(env, WHITE);
+		draw(env);
 
-	mlx_key_hook(env->window, handle_key_press, env);
-	mlx_loop(env->mlx);
+		mlx_key_hook(env->window, handle_key_press, env);
+		mlx_loop(env->mlx);
+	}
 }

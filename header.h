@@ -50,9 +50,10 @@ typedef struct	s_env {
 	void			*window;
 	double			width;
 	double			height;
-	t_point_row	*point_set;
+	t_point_row		*point_set;
 	int				figure_width;
 	int				figure_height;
+	int				figure_depth;
 	double			angle_x;
 	double			angle_y;
 	double			angle_z;
@@ -68,10 +69,6 @@ void			rotate_point_x(t_point **point, double angle);
 void			rotate_point_y(t_point **point, double angle);
 
 void			rotate_point_z(t_point **point, double angle);
-
-double			get_2d_x(t_env *env, t_point *point);
-
-double			get_2d_y(t_env *env, t_point *point);
 
 void			draw_axis(t_env *env, int color);
 
