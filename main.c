@@ -17,14 +17,14 @@ int		handle_key_press(int keycode, t_env *env)
 		exit(0);
 	else if (keycode == A)
 	{
-		env->angle_y -= DEGREE5;
+		env->angle_y += DEGREE5;
 		mlx_clear_window(env->mlx, env->window);
 		draw_axis(env, WHITE);
 		draw(env);
 	}
 	else if (keycode == D)
 	{
-		env->angle_y += DEGREE5;
+		env->angle_y -= DEGREE5;
 		mlx_clear_window(env->mlx, env->window);
 		draw_axis(env, WHITE);
 		draw(env);
@@ -89,6 +89,23 @@ int		main(int argc, char **argv)
 	t_env	*env;
 	int		fd;
 
+	// t_segment	*s1;
+	// t_segment	*s2;
+	// t_point		*cross;
+
+	// s1 = (t_segment *)malloc(sizeof(t_segment));
+	// s2 = (t_segment *)malloc(sizeof(t_segment));
+
+	// s1->a = create_point(-1, 0, 0);
+	// s1->b = create_point(1, 0, 0);
+	// s2->a = create_point(0, -1, 0);
+	// s2->b = create_point(0, 1, 0);
+	// cross = get_flat_segment_cross(s1, s2);
+	// if (cross == NULL)
+	// 	printf("%p\n", cross);
+	// else
+	// 	print_point(cross);
+
 	if (argc == 2)
 	{
 		fd = open(argv[1], O_RDONLY);
@@ -99,7 +116,7 @@ int		main(int argc, char **argv)
 		draw_axis(env, WHITE);
 		draw(env);
 
-		mlx_key_hook(env->window, handle_key_press, env);
+		mlx_hook(env->window, 2, 0, handle_key_press, env);
 		mlx_loop(env->mlx);
 	}
 }

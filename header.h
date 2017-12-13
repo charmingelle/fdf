@@ -45,6 +45,12 @@ typedef struct	s_point_row
 	struct s_point_row	*next;
 }				t_point_row;
 
+typedef struct	s_plane
+{
+	double			visibility;
+	struct s_plane	*next;
+}				t_plane;
+
 typedef struct	s_env {
 	void			*mlx;
 	void			*window;
@@ -59,6 +65,20 @@ typedef struct	s_env {
 	double			angle_z;
 	int				color;
 }				t_env;
+
+typedef struct	s_flat
+{
+	t_point	*a;
+	t_point	*b;
+	t_point	*c;
+	t_point	*d;
+}				t_flat;
+
+typedef struct	s_segment
+{
+	t_point	*a;
+	t_point	*b;
+}				t_segment;
 
 t_point 		*create_point(double x, double y, double z);
 
@@ -90,10 +110,23 @@ void			draw(t_env *env);
 
 t_point			**get_rotated_point(t_env *env, t_point *point);
 
+t_plane			*create_plane(double visibility);
+
+void			add_plane(t_plane **plane, double visibility);
+
+void			free_plane(t_plane **plane);
+
+void			print_all_planes(t_plane **plane);
+
+t_point			*get_flat_segment_cross(t_segment *s1, t_segment *s2);
+
+
 // funcs to delete
 
 void			print_point(t_point *point);
 
 void			print_point_row(t_point_row *point_row);
+
+void			print_plane(t_plane *plane);
 
 ///

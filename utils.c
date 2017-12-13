@@ -62,3 +62,82 @@ t_point_row		*create_point_set(int fd, int *width, int *height)
 	*height = row_number;
 	return (point_row);
 }
+
+t_point			*get_flat_segment_cross(t_segment *s1, t_segment *s2)
+{
+	double	x1;
+	double	x2;
+	double	x3;
+	double	x4;
+	double	y1;
+	double	y2;
+	double	y3;
+	double	y4;
+	double	a1;
+	double	b1;
+	double	c1;
+	double	a2;
+	double	b2;
+	double	c2;
+	double	x;
+	double	y;
+
+	x1 = s1->a->x;
+	x2 = s1->b->x;
+	x3 = s2->a->x;
+	x4 = s2->b->x;
+	y1 = s1->a->y;
+	y2 = s1->b->y;
+	y3 = s2->a->y;
+	y4 = s2->b->y;
+	a1 = y2 - y1;
+	b1 = x1 - x2;
+	c1 = x2 * y1 - y2 * x1;
+	a2 = y4 - y3;
+	b2 = x3 - x4;
+	c2 = x4 * y3 - y4 * x3;
+	if (a1 != 0 && b1 != 0 && a2 != 0 && b2 != 0)
+	{
+		y = (a2 * c1 / a1 - c2) / (b2 - (a2 * b1 / a1));
+		x = (-b1 * y - c1) / a1; 
+	}
+	else if (a1 != 0 && b1 == 0 && a2 != 0 && b2 != 0)
+	{
+		x = -c1 / a1;
+		y = (-a2 * x - c2) / b2;
+	}
+	else if (a1 != 0 && b1 == 0 && a2 != 0 && b2 == 0)
+		return (NULL);
+	else if (a1 != 0 && b1 == 0 && a2 == 0 && b2 != 0)
+	{
+		x = -c1 / a1;
+		y = -c2 / b2;
+	}
+	else if (a1 == 0 && b1 != 0 && a2 != 0 && b2 != 0)
+	{
+		y = -c1 / b1;
+		x = (-b2 * y - c2) / a2;
+	}
+	else if (a1 == 0 && b1 != 0 && a2 != 0 && b2 == 0)
+	{
+		y = -c1 / b1;
+		x = -c2 / a2;
+	}
+	else if (a1 == 0 && b1 != 0 && a2 == 0 && b2 != 0)
+		return (NULL);
+	else if (a1 != 0 && b1 != 0 && a2 != 0 && b2 == 0)
+	{
+		x = -c2 / a2;
+		y = (-a1 * x - c1) / b1;
+	}
+	else
+	{
+		// if (a1 != 0 && b1 != 0 && a2 == 0 && b2 != 0)ß
+		y = -c2 / b2;
+		x = (-b1 * y - c1) / a1;
+	}
+	if ( ((x >= x1 && x <= x2) || (x >= x2 && x <= x1)) && ((y >= y1 && y <= y2) || (y >= y2 && y <= y1))
+		&& ((x >= x3 && x <= x4) || (x >= x4 && x <= x3)) && ((y >= y3 && y <= y4) || (y >= y4 && y <= y3)))
+		return (create_point(x, y, 0));
+	return (NULL);
+}
