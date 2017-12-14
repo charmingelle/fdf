@@ -17,17 +17,3 @@ void	print_point_row(t_point_row *point_row)
 	}
 	printf("\n");
 }
-
-void	print_plane(t_plane *plane)
-{
-	printf("plane->visibility = %g\n", plane->visibility);
-}
-
-void	print_all_planes(t_plane **plane)
-{
-	while (*plane)
-	{
-		print_plane(*plane);
-		plane = &((*plane)->next);
-	}
-}

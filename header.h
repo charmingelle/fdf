@@ -30,7 +30,7 @@
 #define D 2
 #define Q 12
 #define E 14
-#define SEGMENT_LEN 20
+#define SEGMENT_LEN 30
 
 typedef struct	s_point
 {
@@ -44,12 +44,6 @@ typedef struct	s_point_row
 	t_point				**points;
 	struct s_point_row	*next;
 }				t_point_row;
-
-typedef struct	s_plane
-{
-	double			visibility;
-	struct s_plane	*next;
-}				t_plane;
 
 typedef struct	s_env {
 	void			*mlx;
@@ -68,16 +62,18 @@ typedef struct	s_env {
 
 typedef struct	s_flat
 {
-	t_point	*a;
-	t_point	*b;
-	t_point	*c;
-	t_point	*d;
+	t_point			*a;
+	t_point			*b;
+	t_point			*c;
+	t_point			*d;
+	struct s_flat	*next;
 }				t_flat;
 
 typedef struct	s_segment
 {
-	t_point	*a;
-	t_point	*b;
+	t_point				*a;
+	t_point				*b;
+	struct s_segment	*next;
 }				t_segment;
 
 t_point 		*create_point(double x, double y, double z);
@@ -110,23 +106,18 @@ void			draw(t_env *env);
 
 t_point			**get_rotated_point(t_env *env, t_point *point);
 
-t_plane			*create_plane(double visibility);
+t_point			*get_segments_cross(t_point *a_start, t_point *a_end, t_point *b_start, t_point *b_end);
 
-void			add_plane(t_plane **plane, double visibility);
+t_point			**get_segment_flat_cross(t_segment *segment, t_flat *flat);
 
-void			free_plane(t_plane **plane);
+int				are_point_equal(t_point *a, t_point *b);
 
-void			print_all_planes(t_plane **plane);
-
-t_point			*get_flat_segment_cross(t_segment *s1, t_segment *s2);
-
+int				is_point_in_pointset(t_point *point, t_point **pointset);
 
 // funcs to delete
 
 void			print_point(t_point *point);
 
 void			print_point_row(t_point_row *point_row);
-
-void			print_plane(t_plane *plane);
 
 ///

@@ -4,7 +4,9 @@ CC		=	gcc
 
 CFLAGS 	=	-Wextra -Werror -Wall
 
-SOURCE	= 	draw.c funcs_to_delete.c get_next_line.c main.c point_row_funcs.c rotate.c utils.c plane.c
+SOURCE	= 	draw.c funcs_to_delete.c get_next_line.c main.c point_row.c rotate.c reading.c point.c segment.c flat.c
+
+HEADERS	=	header.h
 
 LIBS	=	libft/libft.a minilibx_macos/libmlx.a
 
@@ -12,7 +14,7 @@ OBJ		=	$(SOURCE:.c=.o)
 
 all: $(NAME)
 
-$(NAME): $(OBJ)
+$(NAME): $(OBJ) $(HEADERS)
 	make -C libft;
 	make -C minilibx_macos;
 	${CC} -o $(NAME) $(OBJ) ${LIBS} -framework OpenGL -framework AppKit

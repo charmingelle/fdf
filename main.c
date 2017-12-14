@@ -1,16 +1,5 @@
 #include "header.h"
 
-t_point *create_point(double x, double y, double z)
-{
-	t_point *point;
-
-	point = (t_point *)malloc(sizeof(t_point));
-	point->x = x;
-	point->y = y;
-	point->z = z;
-	return (point);
-}
-
 int		handle_key_press(int keycode, t_env *env)
 {
 	if (keycode == ESC)
@@ -89,18 +78,35 @@ int		main(int argc, char **argv)
 	t_env	*env;
 	int		fd;
 
+	// Test segment and flat cross
+	t_segment		*s;
+	t_flat			*f;
+	t_point			**cross;
+	s = (t_segment *)malloc(sizeof(t_segment));
+	f = (t_flat *)malloc(sizeof(t_flat));
+	f->a = create_point(0, 0, 0);
+	f->b = create_point(2, 0, 0);
+	f->c = create_point(2, 2, 0);
+	f->d = create_point(0, 2, 0);
+	s->a = create_point(0, 0, 0);
+	s->b = create_point(2, 2, 0);
+	cross = get_segment_flat_cross(s, f);
+	if (*cross == NULL)
+		printf("%p\n", *cross);
+	while (*cross)
+		print_point(*cross++);
+
+	// // Test segments cross
 	// t_segment	*s1;
 	// t_segment	*s2;
 	// t_point		*cross;
-
 	// s1 = (t_segment *)malloc(sizeof(t_segment));
 	// s2 = (t_segment *)malloc(sizeof(t_segment));
-
-	// s1->a = create_point(-1, 0, 0);
-	// s1->b = create_point(1, 0, 0);
-	// s2->a = create_point(0, -1, 0);
-	// s2->b = create_point(0, 1, 0);
-	// cross = get_flat_segment_cross(s1, s2);
+	// s1->a = create_point(-1, -1, 0);
+	// s1->b = create_point(4, 4, 0);
+	// s2->a = create_point(3, -3, 0);
+	// s2->b = create_point(3, 4, 0);
+	// cross = get_flat_segment_cross(s1->a, s1->b, s2->a, s2->b);
 	// if (cross == NULL)
 	// 	printf("%p\n", cross);
 	// else
