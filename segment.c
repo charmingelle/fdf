@@ -7,11 +7,49 @@ t_segment	*create_segment(t_point *a, t_point *b)
 	segment = (t_segment *)malloc(sizeof(t_segment));
 	segment->a = a;
 	segment->b = b;
-	segment->next = NULL;
+	segment->next = segment;
+	segment->prev = segment;
 	return (segment);
 }
 
-t_point			*get_segments_cross(t_point *a_start, t_point *a_end, t_point *b_start, t_point *b_end)
+void    add_segment(t_segment **segments, t_segment *new)
+{
+	(*segments)->next->prev = new;
+	new->next = (*segments)->next;
+	new->prev = *segments;
+	(*segments)->next = new;
+}
+
+void	add_segment_back(t_segment **segments, t_segment *new)
+{
+	new->prev = (*segments)->prev;
+	new->next = *segments;
+	(*segments)->prev->next = new;
+	(*segments)->prev = new;
+}
+
+void	delete_segment(t_segment *to_delete)
+{
+	// printf("here2\n");
+	to_delete->next->prev = to_delete->prev;
+	to_delete->prev->next = to_delete->next;
+	ft_memdel((void **)&to_delete->a);
+	ft_memdel((void **)&to_delete->b);
+	ft_memdel((void **)&to_delete);
+}
+
+double	get_z_index(t_point *start, t_point *end, double x, double y)
+{
+	double	t;
+
+	if ((start->x - end->x) != 0)
+		t = (x - start->x) / (start->x - end->x);
+	else
+		t = (y - start->y) / (start->y - end->y);
+	return ((start->z - end->z) * t + start->z);
+}
+
+t_point	*get_segments_cross(t_point *a_start, t_point *a_end, t_point *b_start, t_point *b_end)
 {
 	double	a1;
 	double	b1;
@@ -64,13 +102,13 @@ t_point			*get_segments_cross(t_point *a_start, t_point *a_end, t_point *b_start
 	}
 	else
 	{
-		// if (a1 != 0 && b1 != 0 && a2 == 0 && b2 != 0)ß
+		// if (a1 != 0 && b1 != 0 && a2 == 0 && b2 != 0)
 		y = -c2 / b2;
 		x = (-b1 * y - c1) / a1;
 	}
 	if ( ((x >= a_start->x && x <= a_end->x) || (x >= a_end->x && x <= a_start->x)) && ((y >= a_start->y && y <= a_end->y) || (y >= a_end->y && y <= a_start->y))
 		&& ((x >= b_start->x && x <= b_end->x) || (x >= b_end->x && x <= b_start->x)) && ((y >= b_start->y && y <= b_end->y) || (y >= b_end->y && y <= b_start->y)))
-		return (create_point(x, y, 0));
+		return (create_point(x, y, get_z_index(a_start, a_end, x, y)));
 	return (NULL);
 }
 

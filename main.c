@@ -8,43 +8,43 @@ int		handle_key_press(int keycode, t_env *env)
 	{
 		env->angle_y += DEGREE5;
 		mlx_clear_window(env->mlx, env->window);
-		draw_axis(env, WHITE);
-		draw(env);
+		// draw_axis(env, WHITE);
+		get_rotated_segments_and_flats(env);
 	}
 	else if (keycode == D)
 	{
 		env->angle_y -= DEGREE5;
 		mlx_clear_window(env->mlx, env->window);
-		draw_axis(env, WHITE);
-		draw(env);
+		// draw_axis(env, WHITE);
+		get_rotated_segments_and_flats(env);
 	}
 	else if (keycode == W)
 	{
 		env->angle_x += DEGREE5;
 		mlx_clear_window(env->mlx, env->window);
-		draw_axis(env, WHITE);
-		draw(env);
+		// draw_axis(env, WHITE);
+		get_rotated_segments_and_flats(env);
 	}
 	else if (keycode == S)
 	{
 		env->angle_x -= DEGREE5;
 		mlx_clear_window(env->mlx, env->window);
-		draw_axis(env, WHITE);
-		draw(env);
+		// draw_axis(env, WHITE);
+		get_rotated_segments_and_flats(env);
 	}
 	else if (keycode == Q)
 	{
 		env->angle_z -= DEGREE5;
 		mlx_clear_window(env->mlx, env->window);
-		draw_axis(env, WHITE);
-		draw(env);
+		// draw_axis(env, WHITE);
+		get_rotated_segments_and_flats(env);
 	}
 	else if (keycode == E)
 	{
 		env->angle_z += DEGREE5;
 		mlx_clear_window(env->mlx, env->window);
-		draw_axis(env, WHITE);
-		draw(env);
+		// draw_axis(env, WHITE);
+		get_rotated_segments_and_flats(env);
 	}
 	return (0);
 }
@@ -64,6 +64,7 @@ t_env	*create_env(int fd)
 	if (!(env->window = mlx_new_window(env->mlx, env->width, env->height, "FDF")))
 		exit(1);
 	env->point_set = create_point_set(fd, &width, &height);
+	
 	env->figure_width = width;
 	env->figure_height = height;
 	env->color = GREEN;
@@ -79,22 +80,22 @@ int		main(int argc, char **argv)
 	int		fd;
 
 	// Test segment and flat cross
-	t_segment		*s;
-	t_flat			*f;
-	t_point			**cross;
-	s = (t_segment *)malloc(sizeof(t_segment));
-	f = (t_flat *)malloc(sizeof(t_flat));
-	f->a = create_point(0, 0, 0);
-	f->b = create_point(2, 0, 0);
-	f->c = create_point(2, 2, 0);
-	f->d = create_point(0, 2, 0);
-	s->a = create_point(0, 0, 0);
-	s->b = create_point(2, 2, 0);
-	cross = get_segment_flat_cross(s, f);
-	if (*cross == NULL)
-		printf("%p\n", *cross);
-	while (*cross)
-		print_point(*cross++);
+	// t_segment		*s;
+	// t_flat			*f;
+	// t_point			**cross;
+	// s = (t_segment *)malloc(sizeof(t_segment));
+	// f = (t_flat *)malloc(sizeof(t_flat));
+	// f->a = create_point(0, 0, 0);
+	// f->b = create_point(2, 0, 0);
+	// f->c = create_point(2, 2, 0);
+	// f->d = create_point(0, 2, 0);
+	// s->a = create_point(0, 0, 0);
+	// s->b = create_point(2, 2, 0);
+	// cross = get_segment_flat_cross(s, f);
+	// if (*cross == NULL)
+	// 	printf("%p\n", *cross);
+	// while (*cross)
+	// 	print_point(*cross++);
 
 	// // Test segments cross
 	// t_segment	*s1;
@@ -119,10 +120,11 @@ int		main(int argc, char **argv)
 			exit(1);
 		env = create_env(fd);
 		close(fd);
-		draw_axis(env, WHITE);
-		draw(env);
+		// draw_axis(env, WHITE);
+		get_rotated_segments_and_flats(env);
 
 		mlx_hook(env->window, 2, 0, handle_key_press, env);
+		mlx_hook(env->window, 17, 0, (int (*)())&exit, env);
 		mlx_loop(env->mlx);
 	}
 }

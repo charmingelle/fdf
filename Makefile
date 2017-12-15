@@ -4,7 +4,7 @@ CC		=	gcc
 
 CFLAGS 	=	-Wextra -Werror -Wall
 
-SOURCE	= 	draw.c funcs_to_delete.c get_next_line.c main.c point_row.c rotate.c reading.c point.c segment.c flat.c
+SOURCE	= 	draw.c funcs_to_delete.c get_next_line.c main.c point_row.c rotate.c reading.c point.c segment.c flat.c utils.c
 
 HEADERS	=	header.h
 

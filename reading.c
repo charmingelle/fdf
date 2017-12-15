@@ -1,14 +1,5 @@
 #include "header.h"
 
-void			ft_swap(t_point **a, t_point **b)
-{
-	t_point	*c;
-
-	c = *a;
-	*a = *b;
-	*b = c;
-}
-
 t_point			**get_points_from_z_coords(char **z_coords, int row_number, int *width)
 {
 	t_point	**points;
