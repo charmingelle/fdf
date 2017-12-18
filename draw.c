@@ -6,7 +6,7 @@
 /*   By: grevenko <grevenko@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/12/18 14:11:15 by grevenko          #+#    #+#             */
-/*   Updated: 2017/12/18 21:42:04 by grevenko         ###   ########.fr       */
+/*   Updated: 2017/12/18 21:45:35 by grevenko         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,8 +78,6 @@ void	process_seg(t_seg **segs, t_seg *seg, t_flat **flats)
 				return (delete_seg(seg));
 			if (seg_crosses_flat(seg, *flats))
 			{
-				print_seg(seg);
-				print_flat(*flats);
 				cross = get_seg_flat_cross(seg, *flats);
 				// if (cross[0] && !cross[1])
 				// {
@@ -114,18 +112,6 @@ int		seg_inside_flat_side(t_seg *seg, t_point *side_start, t_point *side_end)
 		&& dist(side_start, seg->b) + dist(seg->b, side_end) == dist(side_start, side_end));
 }
 
-// int		flat_contains_seg(t_seg *seg, t_flat *flat)
-// {
-// 	return ((equal_points(seg->a, flat->a) && equal_points(seg->b, flat->b))
-// 		|| (equal_points(seg->a, flat->b) && equal_points(seg->b, flat->a))
-// 		|| (equal_points(seg->a, flat->b) && equal_points(seg->b, flat->c))
-// 		|| (equal_points(seg->a, flat->c) && equal_points(seg->b, flat->b))
-// 		|| (equal_points(seg->a, flat->c) && equal_points(seg->b, flat->d))
-// 		|| (equal_points(seg->a, flat->d) && equal_points(seg->b, flat->c))
-// 		|| (equal_points(seg->a, flat->d) && equal_points(seg->b, flat->a))
-// 		|| (equal_points(seg->a, flat->a) && equal_points(seg->b, flat->d)));
-// }
-
 int		seg_inside_flat(t_seg *seg, t_flat *flat)
 {
 	return (point_inside_flat(seg->a, flat)
@@ -139,42 +125,6 @@ int		point_inside_flat(t_point *point, t_flat *flat)
 		< (dist(flat->a, flat->b) + dist(flat->b, flat->c)
 		+ dist(flat->c, flat->d) + dist(flat->d, flat->a)));
 }
-
-// int		seg_inside_flat(t_seg *seg, t_flat *flat)
-// {
-// 	return ((seg_above_straight(seg, flat->a, flat->b)
-// 		&& seg_above_straight(seg, flat->b, flat->c)
-// 		&& seg_below_straight(seg, flat->c, flat->d)
-// 		&& seg_below_straight(seg, flat->d, flat->a))
-// 		|| (seg_above_straight(seg, flat->a, flat->b)
-// 		&& seg_below_straight(seg, flat->b, flat->c)
-// 		&& seg_below_straight(seg, flat->c, flat->d)
-// 		&& seg_above_straight(seg, flat->d, flat->a))
-// 		|| (seg_below_straight(seg, flat->a, flat->b)
-// 		&& seg_above_straight(seg, flat->b, flat->c)
-// 		&& seg_above_straight(seg, flat->c, flat->d)
-// 		&& seg_below_straight(seg, flat->d, flat->a))
-// 		|| (seg_below_straight(seg, flat->a, flat->b)
-// 		&& seg_below_straight(seg, flat->b, flat->c)
-// 		&& seg_above_straight(seg, flat->c, flat->d)
-// 		&& seg_above_straight(seg, flat->d, flat->a)));
-// }
-
-// int		seg_above_straight(t_seg *seg, t_point *a, t_point *b)
-// {
-// 	return ((((b->y - a->y) * seg->a->x + (a->x - b->x) * seg->a->y
-// 			+ b->x * a->y - b->y * a->x) >= 0)
-// 		&& (((b->y - a->y) * seg->b->x + (a->x - b->x) * seg->b->y
-// 			+ b->x * a->y - b->y * a->x) >= 0));
-// }
-
-// int		seg_below_straight(t_seg *seg, t_point *a, t_point *b)
-// {
-// 	return ((((b->y - a->y) * seg->a->x + (a->x - b->x) * seg->a->y
-// 			+ b->x * a->y - b->y * a->x) <= 0)
-// 		&& (((b->y - a->y) * seg->b->x + (a->x - b->x) * seg->b->y
-// 			+ b->x * a->y - b->y * a->x) <= 0));
-// }
 
 int		seg_crosses_flat(t_seg *seg, t_flat *flat)
 {
