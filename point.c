@@ -1,6 +1,6 @@
 #include "header.h"
 
-t_point *create_point(double x, double y, double z)
+t_point *get_point(double x, double y, double z)
 {
 	t_point *point;
 

@@ -1,6 +1,6 @@
 #include "header.h"
 
-t_flat  *create_flat(t_point *a, t_point *b, t_point *c, t_point *d)
+t_flat  *get_flat(t_point *a, t_point *b, t_point *c, t_point *d)
 {
    t_flat  *flat;
   

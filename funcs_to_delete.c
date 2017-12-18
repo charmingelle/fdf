@@ -18,18 +18,18 @@ void	print_point_row(t_point_row *point_row)
 	printf("\n");
 }
 
-void	print_segment(t_segment *segment)
+void	print_seg(t_seg *seg)
 {
-	printf("s(%g %g)-(%g %g) ", segment->a->x, segment->a->y, segment->b->x, segment->b->y);
+	printf("s(%g %g)-(%g %g) ", seg->a->x, seg->a->y, seg->b->x, seg->b->y);
 }
 
-void	print_segments(t_segment **segments)
+void	print_segs(t_seg **segs)
 {
-	t_segment	*tmp;
-	tmp = *segments;
-	while ((tmp = tmp->next) != *segments)
+	t_seg	*tmp;
+	tmp = *segs;
+	while ((tmp = tmp->next) != *segs)
 	{
-		print_segment(tmp);
+		print_seg(tmp);
 		printf("\n");
 	}
 }

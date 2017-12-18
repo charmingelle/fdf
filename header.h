@@ -30,7 +30,7 @@
 #define D 2
 #define Q 12
 #define E 14
-#define SEGMENT_LEN 50
+#define SEG_LEN 50
 
 typedef struct	s_point
 {
@@ -54,13 +54,13 @@ typedef struct	s_flat
 	struct s_flat	*next;
 }				t_flat;
 
-typedef struct	s_segment
+typedef struct	s_seg
 {
 	t_point				*a;
 	t_point				*b;
-	struct s_segment	*next;
-	struct s_segment	*prev;
-}				t_segment;
+	struct s_seg	*next;
+	struct s_seg	*prev;
+}				t_seg;
 
 typedef struct  s_env {
     void            *mlx;
@@ -77,7 +77,7 @@ typedef struct  s_env {
     int             color;
 }               t_env;
 
-t_point 		*create_point(double x, double y, double z);
+t_point 		*get_point(double x, double y, double z);
 
 int				handle_key_press(int keycode, t_env *env);
 
@@ -89,15 +89,15 @@ void			rotate_point_z(t_point **point, double angle);
 
 void			draw_axis(t_env *env, int color);
 
-void			draw_segment(t_env *env, t_point *p1, t_point *p2);
+void			draw_seg(t_env *env, t_point *p1, t_point *p2);
 
 t_point			**get_points_from_z_coords(char **z_coords, int row_number, int *width);
 
 void			free_z_coords(char **z_coords);
 
-t_point_row		*create_point_set(int fd, int *width, int *height);
+t_point_row		*get_point_set(int fd, int *width, int *height);
 
-t_point_row		*create_point_row(t_point **points);
+t_point_row		*get_point_row(t_point **points);
 
 void			add_point_row(t_point_row **point_row, t_point **points);
 
@@ -105,51 +105,59 @@ void			ft_swap(t_point **a, t_point **b);
 
 void			draw(t_env *env);
 
-// t_point			**get_rotated_point(t_env *env, t_point *point);
+t_point			*get_rot_point(t_env *env, t_point *point);
 
-t_point			*get_rotated_point(t_env *env, t_point *point);
+t_point			*get_segs_cross(t_point *a_start, t_point *a_end, t_point *b_start, t_point *b_end);
 
-t_point			*get_segments_cross(t_point *a_start, t_point *a_end, t_point *b_start, t_point *b_end);
-
-t_point			**get_segment_flat_cross(t_segment *segment, t_flat *flat);
+t_point			**get_seg_flat_cross(t_seg *seg, t_flat *flat);
 
 int				equal_points(t_point *a, t_point *b);
 
 int				is_point_in_pointset(t_point *point, t_point **pointset);
 
-void    		get_rotated_segments_and_flats(t_env *env);
+void    		get_rotated_segs_and_flats(t_env *env);
 
 int				point_above_straight(t_point *point, t_point *a, t_point *b);
 
-int				segment_above_straight(t_segment *segment, t_point *a, t_point *b);
+int				seg_above_straight(t_seg *seg, t_point *a, t_point *b);
 
 int				point_below_straight(t_point *point, t_point *a, t_point *b);
 
-int				segment_below_straight(t_segment *segment, t_point *a, t_point *b);
+int				seg_below_straight(t_seg *seg, t_point *a, t_point *b);
 
-int         	segment_inside_flat(t_segment *segment, t_flat *flat);
+int         	seg_inside_flat(t_seg *seg, t_flat *flat);
 
-int				segment_below_flat(t_segment *segment, t_flat *flat);
+int				seg_below_flat(t_seg *seg, t_flat *flat);
 
-void			remove_invisible_segments(t_segment **segment, t_flat **flat);
+void			remove_invisible_segs(t_seg **seg, t_flat **flat);
 
-void			process_segment(t_segment **segments, t_segment *segment, t_flat **flats);
+void			process_seg(t_seg **segs, t_seg *seg, t_flat **flats);
 
-t_flat  		*create_flat(t_point *a, t_point *b, t_point *c, t_point *d);
+t_flat  		*get_flat(t_point *a, t_point *b, t_point *c, t_point *d);
 
 void    		add_flat(t_flat **flats, t_flat *new);
 
-t_segment		*create_segment(t_point *a, t_point *b);
+t_seg			*get_seg(t_point *a, t_point *b);
 
-void    		add_segment(t_segment **segments, t_segment *new);
+void    		add_seg(t_seg **segs, t_seg *new);
 
-void			add_segment_back(t_segment **segments, t_segment *new);
+void			add_seg_back(t_seg **segs, t_seg *new);
 
-void			delete_segment(t_segment *to_delete);
+void			delete_seg(t_seg *to_delete);
 
 double			get_z_index(t_point *start, t_point *end, double x, double y);
 
-int				flat_contains_segment(t_segment *segment, t_flat *flat);
+int				flat_contains_seg(t_seg *seg, t_flat *flat);
+
+void			draw_segs(t_env *env, t_seg *segs);
+
+void			free_flats(t_flat **flats);
+
+void			free_segs(t_seg **segs);
+
+void			get_rotated_segs(t_env *env);
+
+void			fill_segs_amd_flats(t_env *env, t_seg **segs, t_flat **flats);
 
 // funcs to delete
 
@@ -157,9 +165,9 @@ void			print_point(t_point *point);
 
 void			print_point_row(t_point_row *point_row);
 
-void			print_segment(t_segment *segment);
+void			print_seg(t_seg *seg);
 
-void			print_segments(t_segment **segments);
+void			print_segs(t_seg **segs);
 
 void			print_flat(t_flat *flat);
 

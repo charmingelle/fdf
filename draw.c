@@ -1,180 +1,199 @@
 #include "header.h"
 
-void	draw_axis(t_env *env, int color)
-{
-	for (double x = (env->width - env->height) / 2; x < env->width - (env->width - env->height) / 2; x++)
-		mlx_pixel_put(env->mlx, env->window, x, (-1) * x + (env->width + env->height) / 2, color);
-	for (double x = 0; x < env->width; x++)
-		mlx_pixel_put(env->mlx, env->window, x, env->height / 2, color);
-	for (double y = 0; y < env->height; y++)
-		mlx_pixel_put(env->mlx, env->window, env->width / 2, y, color);
-}
+// void	draw_axis(t_env *env, int color)
+// {
+// 	for (double x = (env->width - env->height) / 2; x < env->width - (env->width - env->height) / 2; x++)
+// 		mlx_pixel_put(env->mlx, env->window, x, (-1) * x + (env->width + env->height) / 2, color);
+// 	for (double x = 0; x < env->width; x++)
+// 		mlx_pixel_put(env->mlx, env->window, x, env->height / 2, color);
+// 	for (double y = 0; y < env->height; y++)
+// 		mlx_pixel_put(env->mlx, env->window, env->width / 2, y, color);
+// }
 
-void	get_rotated_segments_and_flats(t_env *env)
+void	draw(t_env *env)
 {
-	t_point_row	*pointset;
-	t_segment	*segments;
+	t_seg		*segs;
 	t_flat		*flats;
+
+	mlx_clear_window(env->mlx, env->window);
+	fill_segs_amd_flats(env, &segs, &flats);
+	remove_invisible_segs(&segs, &flats);
+	free_flats(&flats);
+	draw_segs(env, segs);
+	free_segs(&segs);
+}
+
+void	fill_segs_amd_flats(t_env *env, t_seg **segs, t_flat **flats)
+{
+	t_point_row	*ps;
 	int			i;
-	t_segment	*segment_to_free;
-	t_flat		*flat_to_free;
-	t_segment	*tmp;
 
-	pointset = env->point_set;
-	segments = create_segment(NULL, NULL);
-	flats = NULL;
-	while (pointset->next)
+	*segs = get_seg(NULL, NULL);
+	*flats = NULL;
+	ps = env->point_set;
+	while (ps)
 	{
-		add_segment(&segments, create_segment(get_rotated_point(env, pointset->next->points[0]), get_rotated_point(env, pointset->points[0])));
-		i = 0;
-		while (pointset->points[++i])
+		i = -1;
+		while (ps->points[++i])
 		{
-			add_segment(&segments, create_segment(get_rotated_point(env, pointset->points[i - 1]), get_rotated_point(env, pointset->points[i])));
-			add_segment(&segments, create_segment(get_rotated_point(env, pointset->next->points[i]), get_rotated_point(env, pointset->points[i])));
-			add_flat(&flats, create_flat(get_rotated_point(env, pointset->points[i - 1]),
-									get_rotated_point(env, pointset->points[i]),
-									get_rotated_point(env, pointset->next->points[i]),
-									get_rotated_point(env, pointset->next->points[i - 1])));
+			if (i >= 1)
+				add_seg(segs, get_seg(get_rot_point(env, ps->points[i - 1]),
+					get_rot_point(env, ps->points[i])));
+			if (ps->next)
+				add_seg(segs, get_seg(get_rot_point(env, ps->next->points[i]),
+					get_rot_point(env, ps->points[i])));
+			if (i >= 1 && ps->next)
+				add_flat(flats, get_flat(get_rot_point(env, ps->points[i - 1]),
+					get_rot_point(env, ps->points[i]), get_rot_point(env, ps->next->points[i]),
+					get_rot_point(env, ps->next->points[i - 1])));
 		}
-		pointset = pointset->next;
-	}
-	i = 0;
-	while (pointset->points[++i])
-		add_segment(&segments, create_segment(get_rotated_point(env, pointset->points[i - 1]), get_rotated_point(env, pointset->points[i])));
-	// print_flats(&flats);
-	remove_invisible_segments(&segments, &flats);
-	while (flats)
-	{
-		flat_to_free = flats;
-		flats = flats->next;
-		ft_memdel((void **)&flat_to_free->a);
-		ft_memdel((void **)&flat_to_free->b);
-		ft_memdel((void **)&flat_to_free->c);
-		ft_memdel((void **)&flat_to_free->d);
-		ft_memdel((void **)&flat_to_free);
-	}	
-	tmp = segments->next;
-	while (tmp != segments)
-	{
-		draw_segment(env, tmp->a, tmp->b);
-		segment_to_free = tmp;
-		tmp = tmp->next;
-		ft_memdel((void **)&segment_to_free->a);
-		ft_memdel((void **)&segment_to_free->b);
-		ft_memdel((void **)&segment_to_free);
+		ps = ps->next;
 	}
 }
 
-// int		point_above_straight(t_point *point, t_point *a, t_point *b)
-// {
-// 	return (((b->y - a->y) * point->x + (a->x - b->x) * point->y + b->x * a->y - b->y * a->x) <= 0);
-// }
-
-int		segment_above_straight(t_segment *segment, t_point *a, t_point *b)
+void	remove_invisible_segs(t_seg **segs, t_flat **flats)
 {
-	return (
-		(((b->y - a->y) * segment->a->x + (a->x - b->x) * segment->a->y + b->x * a->y - b->y * a->x) <= 0)
-		&& (((b->y - a->y) * segment->b->x + (a->x - b->x) * segment->b->y + b->x * a->y - b->y * a->x) <= 0)
-	);
-	// return (point_above_straight(segment->a, a, b) && point_above_straight(segment->b, a, b));
+	t_seg	*temp;
+
+	temp = *segs;
+	while ((temp = temp->next) != *segs)
+		process_seg(segs, temp, flats);
 }
 
-// int		point_below_straight(t_point *point, t_point *a, t_point *b)
-// {
-// 	return (((b->y - a->y) * point->x + (a->x - b->x) * point->y + b->x * a->y - b->y * a->x) >= 0);
-// }
-
-int		segment_below_straight(t_segment *segment, t_point *a, t_point *b)
-{
-	return (
-		(((b->y - a->y) * segment->a->x + (a->x - b->x) * segment->a->y + b->x * a->y - b->y * a->x) <= 0)
-		&& (((b->y - a->y) * segment->b->x + (a->x - b->x) * segment->b->y + b->x * a->y - b->y * a->x) <= 0)
-	);
-	// return (point_below_straight(segment->a, a, b) && point_below_straight(segment->b, a, b));
-}
-
-int		flat_contains_segment(t_segment *segment, t_flat *flat)
-{
-	return ((equal_points(segment->a, flat->a) && equal_points(segment->b, flat->b))
-		|| (equal_points(segment->a, flat->b) && equal_points(segment->b, flat->c))
-		|| (equal_points(segment->a, flat->c) && equal_points(segment->b, flat->d))
-		|| (equal_points(segment->a, flat->d) && equal_points(segment->b, flat->a)));
-}
-
-int		segment_inside_flat(t_segment *segment, t_flat *flat)
-{
-	return ((segment_above_straight(segment, flat->a, flat->b)
-		&& segment_above_straight(segment, flat->b, flat->c)
-		&& segment_below_straight(segment, flat->c, flat->d)
-		&& segment_below_straight(segment, flat->d, flat->a))
-		|| (segment_above_straight(segment, flat->a, flat->b)
-		&& segment_below_straight(segment, flat->b, flat->c)
-		&& segment_below_straight(segment, flat->c, flat->d)
-		&& segment_above_straight(segment, flat->d, flat->a))
-		|| (segment_below_straight(segment, flat->a, flat->b)
-		&& segment_above_straight(segment, flat->b, flat->c)
-		&& segment_above_straight(segment, flat->c, flat->d)
-		&& segment_below_straight(segment, flat->d, flat->a))
-		|| (segment_below_straight(segment, flat->a, flat->b)
-		&& segment_below_straight(segment, flat->b, flat->c)
-		&& segment_above_straight(segment, flat->c, flat->d)
-		&& segment_above_straight(segment, flat->d, flat->a)));
-}
-
-int		segment_below_flat(t_segment *segment, t_flat *flat)
-{
-	return (segment->a->z < flat->a->z
-		&& segment->a->z < flat->b->z
-		&& segment->a->z < flat->c->z
-		&& segment->a->z < flat->d->z
-		&& segment->b->z < flat->a->z
-		&& segment->b->z < flat->b->z
-		&& segment->b->z < flat->c->z
-		&& segment->b->z < flat->d->z);
-}
-
-void	remove_invisible_segments(t_segment **segments, t_flat **flats)
-{
-	t_segment	*tmp;
-
-	tmp = *segments;
-	while ((tmp = tmp->next) != *segments)
-		process_segment(segments, tmp, flats);
-}
-
-void	process_segment(t_segment **segments, t_segment *segment, t_flat **flats)
+void	process_seg(t_seg **segs, t_seg *seg, t_flat **flats)
 {
 	t_point		**cross;
 
 	while (*flats)
 	{
-		if (!flat_contains_segment(segment, *flats))
+		if (!flat_contains_seg(seg, *flats))
 		{
-			cross = get_segment_flat_cross(segment, *flats);
-			if (segment_inside_flat(segment, *flats) && segment_below_flat(segment, *flats))
+			cross = get_seg_flat_cross(seg, *flats);
+			if (seg_inside_flat(seg, *flats) && seg_below_flat(seg, *flats))
 			{
-				delete_segment(segment);
+				delete_seg(seg);
 				return ;
 			}
-			else if (cross && cross[0] && !cross[1])
-			{
-				add_segment_back(segments, create_segment(segment->a, cross[0]));
-				add_segment_back(segments, create_segment(cross[0], segment->b));
-				return ;
-			}
-			else if (cross && cross[0] && cross[1])
-			{
-				add_segment_back(segments, create_segment(segment->a, cross[0]));
-				add_segment_back(segments, create_segment(cross[0], cross[1]));
-				add_segment_back(segments, create_segment(cross[1], segment->b));
-				return ;
-			}
+			// if (cross && cross[0] && !cross[1])
+			// {
+			// 	add_seg_back(segs, get_seg(seg->a, cross[0]));
+			// 	add_seg_back(segs, get_seg(cross[0], seg->b));
+			// 	return ;
+			// }
+			// if (cross && cross[0] && cross[1])
+			// {
+			// 	add_seg_back(segs, get_seg(seg->a, cross[0]));
+			// 	add_seg_back(segs, get_seg(cross[0], cross[1]));
+			// 	add_seg_back(segs, get_seg(cross[1], seg->b));
+			// 	return ;
+			// }
 		}
 		flats = &((*flats)->next);
 	}
 }
 
-void	draw_segment(t_env *env, t_point *p1, t_point *p2)
+void	draw_segs(t_env *env, t_seg *segs)
+{
+	t_seg	*temp;
+
+	temp = segs->next;
+	while (temp != segs)
+	{
+		draw_seg(env, temp->a, temp->b);
+		temp = temp->next;
+	}
+}
+
+void	free_flats(t_flat **flats)
+{
+	t_flat	*flat_to_free;
+
+	while (*flats)
+	{
+		flat_to_free = *flats;
+		*flats = (*flats)->next;
+		ft_memdel((void **)&flat_to_free->a);
+		ft_memdel((void **)&flat_to_free->b);
+		ft_memdel((void **)&flat_to_free->c);
+		ft_memdel((void **)&flat_to_free->d);
+		ft_memdel((void **)&flat_to_free);
+	}
+}
+
+void	free_segs(t_seg **segs)
+{
+	t_seg	*temp;
+	t_seg	*seg_to_free;
+
+	temp = (*segs)->next;
+	while (temp != *segs)
+	{
+		seg_to_free = temp;
+		temp = temp->next;
+		ft_memdel((void **)&seg_to_free->a);
+		ft_memdel((void **)&seg_to_free->b);
+		ft_memdel((void **)&seg_to_free);
+	}
+}
+
+int		seg_above_straight(t_seg *seg, t_point *a, t_point *b)
+{
+	return (
+		(((b->y - a->y) * seg->a->x + (a->x - b->x) * seg->a->y + b->x * a->y - b->y * a->x) <= 0)
+		&& (((b->y - a->y) * seg->b->x + (a->x - b->x) * seg->b->y + b->x * a->y - b->y * a->x) <= 0)
+	);
+}
+
+int		seg_below_straight(t_seg *seg, t_point *a, t_point *b)
+{
+	return (
+		(((b->y - a->y) * seg->a->x + (a->x - b->x) * seg->a->y + b->x * a->y - b->y * a->x) <= 0)
+		&& (((b->y - a->y) * seg->b->x + (a->x - b->x) * seg->b->y + b->x * a->y - b->y * a->x) <= 0)
+	);
+}
+
+int		flat_contains_seg(t_seg *seg, t_flat *flat)
+{
+	return ((equal_points(seg->a, flat->a) && equal_points(seg->b, flat->b))
+		|| (equal_points(seg->a, flat->b) && equal_points(seg->b, flat->c))
+		|| (equal_points(seg->a, flat->c) && equal_points(seg->b, flat->d))
+		|| (equal_points(seg->a, flat->d) && equal_points(seg->b, flat->a)));
+}
+
+int		seg_inside_flat(t_seg *seg, t_flat *flat)
+{
+	return ((seg_above_straight(seg, flat->a, flat->b)
+		&& seg_above_straight(seg, flat->b, flat->c)
+		&& seg_below_straight(seg, flat->c, flat->d)
+		&& seg_below_straight(seg, flat->d, flat->a))
+		|| (seg_above_straight(seg, flat->a, flat->b)
+		&& seg_below_straight(seg, flat->b, flat->c)
+		&& seg_below_straight(seg, flat->c, flat->d)
+		&& seg_above_straight(seg, flat->d, flat->a))
+		|| (seg_below_straight(seg, flat->a, flat->b)
+		&& seg_above_straight(seg, flat->b, flat->c)
+		&& seg_above_straight(seg, flat->c, flat->d)
+		&& seg_below_straight(seg, flat->d, flat->a))
+		|| (seg_below_straight(seg, flat->a, flat->b)
+		&& seg_below_straight(seg, flat->b, flat->c)
+		&& seg_above_straight(seg, flat->c, flat->d)
+		&& seg_above_straight(seg, flat->d, flat->a)));
+}
+
+int		seg_below_flat(t_seg *seg, t_flat *flat)
+{
+	return (seg->a->z < flat->a->z
+		&& seg->a->z < flat->b->z
+		&& seg->a->z < flat->c->z
+		&& seg->a->z < flat->d->z
+		&& seg->b->z < flat->a->z
+		&& seg->b->z < flat->b->z
+		&& seg->b->z < flat->c->z
+		&& seg->b->z < flat->d->z);
+}
+
+
+void	draw_seg(t_env *env, t_point *p1, t_point *p2)
 {
 	double 	x1;
 	double 	y1;

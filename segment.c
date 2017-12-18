@@ -1,36 +1,35 @@
 #include "header.h"
 
-t_segment	*create_segment(t_point *a, t_point *b)
+t_seg	*get_seg(t_point *a, t_point *b)
 {
-	t_segment *segment;
+	t_seg *seg;
 
-	segment = (t_segment *)malloc(sizeof(t_segment));
-	segment->a = a;
-	segment->b = b;
-	segment->next = segment;
-	segment->prev = segment;
-	return (segment);
+	seg = (t_seg *)malloc(sizeof(t_seg));
+	seg->a = a;
+	seg->b = b;
+	seg->next = seg;
+	seg->prev = seg;
+	return (seg);
 }
 
-void    add_segment(t_segment **segments, t_segment *new)
+void    add_seg(t_seg **segs, t_seg *new)
 {
-	(*segments)->next->prev = new;
-	new->next = (*segments)->next;
-	new->prev = *segments;
-	(*segments)->next = new;
+	(*segs)->next->prev = new;
+	new->next = (*segs)->next;
+	new->prev = *segs;
+	(*segs)->next = new;
 }
 
-void	add_segment_back(t_segment **segments, t_segment *new)
+void	add_seg_back(t_seg **segs, t_seg *new)
 {
-	new->prev = (*segments)->prev;
-	new->next = *segments;
-	(*segments)->prev->next = new;
-	(*segments)->prev = new;
+	new->prev = (*segs)->prev;
+	new->next = *segs;
+	(*segs)->prev->next = new;
+	(*segs)->prev = new;
 }
 
-void	delete_segment(t_segment *to_delete)
+void	delete_seg(t_seg *to_delete)
 {
-	// printf("here2\n");
 	to_delete->next->prev = to_delete->prev;
 	to_delete->prev->next = to_delete->next;
 	ft_memdel((void **)&to_delete->a);
@@ -49,7 +48,7 @@ double	get_z_index(t_point *start, t_point *end, double x, double y)
 	return ((start->z - end->z) * t + start->z);
 }
 
-t_point	*get_segments_cross(t_point *a_start, t_point *a_end, t_point *b_start, t_point *b_end)
+t_point	*get_segs_cross(t_point *a_start, t_point *a_end, t_point *b_start, t_point *b_end)
 {
 	double	a1;
 	double	b1;
@@ -108,11 +107,11 @@ t_point	*get_segments_cross(t_point *a_start, t_point *a_end, t_point *b_start, 
 	}
 	if ( ((x >= a_start->x && x <= a_end->x) || (x >= a_end->x && x <= a_start->x)) && ((y >= a_start->y && y <= a_end->y) || (y >= a_end->y && y <= a_start->y))
 		&& ((x >= b_start->x && x <= b_end->x) || (x >= b_end->x && x <= b_start->x)) && ((y >= b_start->y && y <= b_end->y) || (y >= b_end->y && y <= b_start->y)))
-		return (create_point(x, y, get_z_index(a_start, a_end, x, y)));
+		return (get_point(x, y, get_z_index(a_start, a_end, x, y)));
 	return (NULL);
 }
 
-t_point	**get_segment_flat_cross(t_segment *segment, t_flat *flat)
+t_point	**get_seg_flat_cross(t_seg *seg, t_flat *flat)
 {
 	t_point **cross;
 	t_point	*temp;
@@ -121,13 +120,13 @@ t_point	**get_segment_flat_cross(t_segment *segment, t_flat *flat)
 	if (!(cross = ft_memalloc(sizeof(t_point *) * 5)))
 		exit(1);
 	i = 0;
-	if ((temp = get_segments_cross(segment->a, segment->b, flat->a, flat->b)) && !is_point_in_pointset(temp, cross))
+	if ((temp = get_segs_cross(seg->a, seg->b, flat->a, flat->b)) && !is_point_in_pointset(temp, cross))
 		cross[i++] = temp;
-	if ((temp = get_segments_cross(segment->a, segment->b, flat->b, flat->c)) && !is_point_in_pointset(temp, cross))
+	if ((temp = get_segs_cross(seg->a, seg->b, flat->b, flat->c)) && !is_point_in_pointset(temp, cross))
 		cross[i++] = temp;
-	if ((temp = get_segments_cross(segment->a, segment->b, flat->c, flat->d)) && !is_point_in_pointset(temp, cross))
+	if ((temp = get_segs_cross(seg->a, seg->b, flat->c, flat->d)) && !is_point_in_pointset(temp, cross))
 		cross[i++] = temp;
-	if ((temp = get_segments_cross(segment->a, segment->b, flat->d, flat->a)) && !is_point_in_pointset(temp, cross))
+	if ((temp = get_segs_cross(seg->a, seg->b, flat->d, flat->a)) && !is_point_in_pointset(temp, cross))
 		cross[i++] = temp;
 	return (cross);
 }

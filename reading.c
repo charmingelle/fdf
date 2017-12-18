@@ -15,7 +15,7 @@ t_point			**get_points_from_z_coords(char **z_coords, int row_number, int *width
 	i = 0;
 	while (i < amount)
 	{
-		points[i] = create_point(row_number * SEGMENT_LEN, i * SEGMENT_LEN, ft_atoi(z_coords[i]) * SEGMENT_LEN / 2);
+		points[i] = get_point(row_number * SEG_LEN, i * SEG_LEN, ft_atoi(z_coords[i]) * SEG_LEN / 2);
 		i++;
 	}
 	points[i] = NULL;
@@ -32,7 +32,7 @@ void			free_z_coords(char **z_coords)
 	free(z_coords);
 }
 
-t_point_row		*create_point_set(int fd, int *width, int *height)
+t_point_row		*get_point_set(int fd, int *width, int *height)
 {
 	char			*row;
 	int				gnl_result;
