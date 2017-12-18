@@ -1,10 +1,6 @@
 #include "header.h"
 
-void	ft_swap(t_point **a, t_point **b)
+double	dist(t_point *a, t_point *b)
 {
-	t_point	*c;
-
-	c = *a;
-	*a = *b;
-	*b = c;
+	return (sqrt(pow(a->x - b->x, 2) + pow(a->y - b->y, 2)));
 }

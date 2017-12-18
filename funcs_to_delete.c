@@ -20,7 +20,7 @@ void	print_point_row(t_point_row *point_row)
 
 void	print_seg(t_seg *seg)
 {
-	printf("s(%g %g)-(%g %g) ", seg->a->x, seg->a->y, seg->b->x, seg->b->y);
+	printf("s(%g %g)-(%g %g)\n", seg->a->x, seg->a->y, seg->b->x, seg->b->y);
 }
 
 void	print_segs(t_seg **segs)
@@ -28,15 +28,12 @@ void	print_segs(t_seg **segs)
 	t_seg	*tmp;
 	tmp = *segs;
 	while ((tmp = tmp->next) != *segs)
-	{
 		print_seg(tmp);
-		printf("\n");
-	}
 }
 
 void	print_flat(t_flat *flat)
 {
-	printf("f(%g %g)-(%g %g)-(%g %g)-(%g %g) ",
+	printf("f(%g %g)-(%g %g)-(%g %g)-(%g %g)\n",
 			flat->a->x, flat->a->y,
 			flat->b->x, flat->b->y,
 			flat->c->x, flat->c->y,
@@ -49,6 +46,15 @@ void	print_flats(t_flat **flats)
 	{
 		print_flat(*flats);
 		flats = &((*flats)->next);
-		printf("\n");
 	}
+}
+
+void	draw_axis(t_env *env, int color)
+{
+	for (double x = (env->w_width - env->w_height) / 2; x < env->w_width - (env->w_width - env->w_height) / 2; x++)
+		mlx_pixel_put(env->mlx, env->window, x, (-1) * x + (env->w_width + env->w_height) / 2, color);
+	for (double x = 0; x < env->w_width; x++)
+		mlx_pixel_put(env->mlx, env->window, x, env->w_height / 2, color);
+	for (double y = 0; y < env->w_height; y++)
+		mlx_pixel_put(env->mlx, env->window, env->w_width / 2, y, color);
 }

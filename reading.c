@@ -1,38 +1,6 @@
 #include "header.h"
 
-t_point			**get_points_from_z_coords(char **z_coords, int row_number, int *width)
-{
-	t_point	**points;
-	int		amount;
-	int		i;
-	
-	amount = 0;
-	while (z_coords[amount])
-		amount++;
-	*width = amount;
-	if (!(points = (t_point **)malloc(sizeof(t_point *) * (amount + 1))))
-		exit(1);
-	i = 0;
-	while (i < amount)
-	{
-		points[i] = get_point(row_number * SEG_LEN, i * SEG_LEN, ft_atoi(z_coords[i]) * SEG_LEN / 2);
-		i++;
-	}
-	points[i] = NULL;
-	return (points);
-}
-
-void			free_z_coords(char **z_coords)
-{
-	int	i;
-
-	i = 0;
-	while (z_coords[i])
-		free(z_coords[i++]);
-	free(z_coords);
-}
-
-t_point_row		*get_point_set(int fd, int *width, int *height)
+void	set_figure(int fd, t_env *env)
 {
 	char			*row;
 	int				gnl_result;
@@ -46,10 +14,40 @@ t_point_row		*get_point_set(int fd, int *width, int *height)
 	{
 		if (!(z_coords = ft_strsplit(row, ' ')))
 			exit(1);
-		add_point_row(&point_row, get_points_from_z_coords(z_coords, row_number, width));
+		add_point_row(&point_row, get_points_from_z_coords(env, z_coords, row_number));
 		free_z_coords(z_coords);
 		row_number++;
 	}
-	*height = row_number;
-	return (point_row);
+	env->f_height = row_number;
+	env->pointset = point_row;
+}
+
+t_point		**get_points_from_z_coords(t_env *env, char **z_coords, int row_number)
+{
+	t_point	**points;
+	int		i;
+	
+	env->f_width = 0;
+	while (z_coords[env->f_width])
+		env->f_width++;
+	if (!(points = (t_point **)malloc(sizeof(t_point *) * (env->f_width + 1))))
+		exit(1);
+	i = 0;
+	while (i < env->f_width)
+	{
+		points[i] = get_point(i, row_number, ft_atoi(z_coords[i]));
+		i++;
+	}
+	points[i] = NULL;
+	return (points);
+}
+
+void		free_z_coords(char **z_coords)
+{
+	int	i;
+
+	i = 0;
+	while (z_coords[i])
+		free(z_coords[i++]);
+	free(z_coords);
 }

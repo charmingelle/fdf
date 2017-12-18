@@ -30,7 +30,6 @@
 #define D 2
 #define Q 12
 #define E 14
-#define SEG_LEN 50
 
 typedef struct	s_point
 {
@@ -65,16 +64,16 @@ typedef struct	s_seg
 typedef struct  s_env {
     void            *mlx;
     void            *window;
-    double          width;
-    double          height;
-    t_point_row     *point_set;
-    int             figure_width;
-    int             figure_height;
-    int             figure_depth;
+    double          w_width;
+    double          w_height;
+    t_point_row     *pointset;
+    int             f_width;
+    int             f_height;
     double          angle_x;
     double          angle_y;
     double          angle_z;
     int             color;
+    double			seglen;
 }               t_env;
 
 t_point 		*get_point(double x, double y, double z);
@@ -87,15 +86,13 @@ void			rotate_point_y(t_point **point, double angle);
 
 void			rotate_point_z(t_point **point, double angle);
 
-void			draw_axis(t_env *env, int color);
-
 void			draw_seg(t_env *env, t_point *p1, t_point *p2);
 
-t_point			**get_points_from_z_coords(char **z_coords, int row_number, int *width);
+t_point			**get_points_from_z_coords(t_env *env, char **z_coords, int row_number);
 
 void			free_z_coords(char **z_coords);
 
-t_point_row		*get_point_set(int fd, int *width, int *height);
+void			set_figure(int fd, t_env *env);
 
 t_point_row		*get_point_row(t_point **points);
 
@@ -105,7 +102,7 @@ void			ft_swap(t_point **a, t_point **b);
 
 void			draw(t_env *env);
 
-t_point			*get_rot_point(t_env *env, t_point *point);
+t_point			*get_rot_and_exp_point(t_env *env, t_point *point);
 
 t_point			*get_segs_cross(t_point *a_start, t_point *a_end, t_point *b_start, t_point *b_end);
 
@@ -159,6 +156,28 @@ void			get_rotated_segs(t_env *env);
 
 void			fill_segs_amd_flats(t_env *env, t_seg **segs, t_flat **flats);
 
+t_env			*get_env(int fd);
+
+int				handle_key_press(int keycode, t_env *env);
+
+void			move_point(t_point *point, double x_shift, double y_shift);
+
+void			center_figure(t_env *env);
+
+int				mouse_handle(int key, int x, int y, t_env *env);
+
+double			dist(t_point *a, t_point *b);
+
+int				point_inside_flat(t_point *point, t_flat *flat);
+
+int				seg_inside_flat(t_seg *seg, t_flat *flat);
+
+int				seg_crosses_flat(t_seg *seg, t_flat *flat);
+
+int				flat_contains_seg(t_seg *seg, t_flat *flat);
+
+int				seg_inside_flat_side(t_seg *seg, t_point *side_start, t_point *side_end);
+
 // funcs to delete
 
 void			print_point(t_point *point);
@@ -172,5 +191,7 @@ void			print_segs(t_seg **segs);
 void			print_flat(t_flat *flat);
 
 void			print_flats(t_flat **flats);
+
+void			draw_axis(t_env *env, int color);
 
 ///

@@ -23,3 +23,9 @@ int		is_point_in_pointset(t_point *point, t_point **pointset)
 			return (1);
 	return (0);
 }
+
+void	move_point(t_point *point, double x_shift, double y_shift)
+{
+	point->x += x_shift;
+	point->y += y_shift;
+}
