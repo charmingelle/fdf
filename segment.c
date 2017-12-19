@@ -130,3 +130,8 @@ t_point	**get_seg_flat_cross(t_seg *seg, t_flat *flat)
 		cross[i++] = temp;
 	return (cross);
 }
+
+int		equal_segs(t_seg *s1, t_seg *s2)
+{
+	return ((s1->a == s2->a) && (s1->b == s2->b));
+}

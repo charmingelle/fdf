@@ -58,3 +58,12 @@ void	draw_axis(t_env *env, int color)
 	for (double y = 0; y < env->w_height; y++)
 		mlx_pixel_put(env->mlx, env->window, env->w_width / 2, y, color);
 }
+
+void	print_cross(t_point **points)
+{
+	int i;
+
+	i = -1;
+	while (points[++i])
+		print_point(points[i]);
+}

@@ -6,7 +6,7 @@
 /*   By: grevenko <grevenko@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/12/18 14:11:15 by grevenko          #+#    #+#             */
-/*   Updated: 2017/12/18 21:45:35 by grevenko         ###   ########.fr       */
+/*   Updated: 2017/12/19 16:20:11 by grevenko         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,17 +79,20 @@ void	process_seg(t_seg **segs, t_seg *seg, t_flat **flats)
 			if (seg_crosses_flat(seg, *flats))
 			{
 				cross = get_seg_flat_cross(seg, *flats);
-				// if (cross[0] && !cross[1])
-				// {
-				// 	add_seg_back(segs, get_seg(seg->a, cross[0]));
-				// 	add_seg_back(segs, get_seg(cross[0], seg->b));
-				// 	return ;
-				// }
+				if (cross[0] && !cross[1])
+				{
+					if (!equal_points(seg->a, cross[0]) && !equal_points(cross[0], seg->b))
+					{
+						add_seg_back(segs, get_seg(seg->a, cross[0]));
+						add_seg_back(segs, get_seg(cross[0], seg->b));
+						return ;
+					}
+				}
 				// else if (cross[0] && cross[1])
 				// {
-				// 	add_seg_back(segs, get_seg(seg->a, cross[0]));
-				// 	add_seg_back(segs, get_seg(cross[0], cross[1]));
-				// 	add_seg_back(segs, get_seg(cross[1], seg->b));
+				// 	!equal_points(seg->a, cross[0]) ? add_seg_back(segs, get_seg(seg->a, cross[0])) : 0;
+				// 	!equal_points(cross[0], cross[1]) ? add_seg_back(segs, get_seg(cross[0], cross[1])) : 0;
+				// 	!equal_points(cross[1], seg->b) ? add_seg_back(segs, get_seg(cross[1], seg->b)) : 0;
 				// 	return ;
 				// }
 			}

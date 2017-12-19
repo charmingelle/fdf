@@ -194,4 +194,6 @@ void			print_flats(t_flat **flats);
 
 void			draw_axis(t_env *env, int color);
 
+void			print_cross(t_point **points);
+
 ///
