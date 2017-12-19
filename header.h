@@ -98,8 +98,6 @@ t_point_row		*get_point_row(t_point **points);
 
 void			add_point_row(t_point_row **point_row, t_point **points);
 
-void			ft_swap(t_point **a, t_point **b);
-
 void			draw(t_env *env);
 
 t_point			*get_rot_and_exp_point(t_env *env, t_point *point);
@@ -177,6 +175,25 @@ int				seg_crosses_flat(t_seg *seg, t_flat *flat);
 int				flat_contains_seg(t_seg *seg, t_flat *flat);
 
 int				seg_inside_flat_side(t_seg *seg, t_point *side_start, t_point *side_end);
+
+void			define_flats(t_env *env, t_flat **flats);
+
+void			draw_flats(t_env *env, t_flat **flats);
+
+void			draw_flat(t_env *env, t_flat *flat);
+
+double			count_x_on_seg(t_env *env, t_point *start, t_point *end, double y);
+
+void			order_triang_points(t_point **points);
+
+void			ft_swap(double *a, double *b);
+
+void			draw_triangle(t_env *env, t_point *a, t_point *b, t_point *c);
+
+void			draw_top_middle_half_triangle(t_env *env, t_point **points);
+
+void			draw_middle_bottom_half_triangle(t_env *env, t_point **points);
+
 
 // funcs to delete
 

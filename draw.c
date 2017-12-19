@@ -6,7 +6,7 @@
 /*   By: grevenko <grevenko@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/12/18 14:11:15 by grevenko          #+#    #+#             */
-/*   Updated: 2017/12/19 16:20:11 by grevenko         ###   ########.fr       */
+/*   Updated: 2017/12/19 19:17:54 by grevenko         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,23 +14,19 @@
 
 void	draw(t_env *env)
 {
-	t_seg		*segs;
 	t_flat		*flats;
 
 	mlx_clear_window(env->mlx, env->window);
-	fill_segs_amd_flats(env, &segs, &flats);
-	remove_invisible_segs(&segs, &flats);
+	define_flats(env, &flats);
+	draw_flats(env, &flats);
 	free_flats(&flats);
-	draw_segs(env, segs);
-	free_segs(&segs);
 }
 
-void	fill_segs_amd_flats(t_env *env, t_seg **segs, t_flat **flats)
+void	define_flats(t_env *env, t_flat **flats)
 {
 	t_point_row	*ps;
 	int			i;
 
-	*segs = get_seg(NULL, NULL);
 	*flats = NULL;
 	ps = env->pointset;
 	while (ps)
@@ -38,12 +34,6 @@ void	fill_segs_amd_flats(t_env *env, t_seg **segs, t_flat **flats)
 		i = -1;
 		while (ps->points[++i])
 		{
-			if (i >= 1)
-				add_seg(segs, get_seg(get_rot_and_exp_point(env, ps->points[i - 1]),
-					get_rot_and_exp_point(env, ps->points[i])));
-			if (ps->next)
-				add_seg(segs, get_seg(get_rot_and_exp_point(env, ps->next->points[i]),
-					get_rot_and_exp_point(env, ps->points[i])));
 			if (i >= 1 && ps->next)
 				add_flat(flats, get_flat(get_rot_and_exp_point(env, ps->points[i - 1]),
 					get_rot_and_exp_point(env, ps->points[i]),
@@ -53,6 +43,168 @@ void	fill_segs_amd_flats(t_env *env, t_seg **segs, t_flat **flats)
 		ps = ps->next;
 	}
 }
+
+void	draw_flats(t_env *env, t_flat **flats)
+{
+	while (*flats)
+	{
+		draw_flat(env, *flats);
+		flats = &((*flats)->next);
+	}
+}
+
+void	draw_flat(t_env *env, t_flat *flat)
+{
+	draw_seg(env, flat->a, flat->b);
+	draw_seg(env, flat->b, flat->c);
+	draw_seg(env, flat->c, flat->d);
+	draw_seg(env, flat->d, flat->a);
+	draw_triangle(env, flat->a, flat->b, flat->c);
+	draw_triangle(env, flat->c, flat->d, flat->a);
+}
+
+void	draw_triangle(t_env *env, t_point *a, t_point *b, t_point *c)
+{
+	t_point	**points;
+
+	points = (t_point **)malloc(sizeof(t_point *) * 3);
+	points[0] = a;
+	points[1] = b;
+	points[2] = c;
+	order_triang_points(points);
+	points[0]->y != points[1]->y ? draw_top_middle_half_triangle(env, points) : 0;
+	points[1]->y != points[2]->y ? draw_middle_bottom_half_triangle(env, points) : 0;
+	free(points);
+}
+
+void	draw_top_middle_half_triangle(t_env *env, t_point **points)
+{
+	double	y;
+	double	y_limit;
+	double	x_start;
+	double	x_end;
+	
+	y = points[0]->y + (env->w_height / 2) + 1;
+	y_limit = points[1]->y + (env->w_height / 2);
+	while (y > y_limit)
+	{
+		x_start = count_x_on_seg(env, points[0], points[1], y);
+		x_end = count_x_on_seg(env, points[0], points[2], y);
+		if (x_start > x_end)
+			ft_swap(&x_start, &x_end);
+		while (x_start < x_end)
+		{
+			mlx_pixel_put(env->mlx, env->window, x_start, y, RED);
+			x_start++;
+		}
+		y--;
+	}
+}
+
+void	draw_middle_bottom_half_triangle(t_env *env, t_point **points)
+{
+	double	y;
+	double	y_limit;
+	double	x_start;
+	double	x_end;
+	
+	y = points[1]->y + (env->w_height / 2) + 1;
+	y_limit = points[2]->y + (env->w_height / 2);
+	while (y > y_limit)
+	{
+		x_start = count_x_on_seg(env, points[1], points[2], y);
+		x_end = count_x_on_seg(env, points[0], points[2], y);
+		if (x_start > x_end)
+			ft_swap(&x_start, &x_end);
+		while (x_start < x_end)
+		{
+			mlx_pixel_put(env->mlx, env->window, x_start, y, RED);
+			x_start++;
+		}
+		y--;
+	}
+}
+
+double	count_x_on_seg(t_env *env, t_point *start, t_point *end, double y)
+{
+	double	x_start;
+	double	y_start;
+	double	x_end;
+	double	y_end;
+
+	x_start = start->x + env->w_width / 2;
+	y_start = start->y + env->w_height / 2;
+	x_end = end->x + env->w_width / 2;
+	y_end = end->y + env->w_height / 2;
+	return (((x_start - x_end) * y + x_end * y_start - y_end * x_start) / (y_start - y_end));
+}
+
+void	order_triang_points(t_point **points)
+{
+	t_point	*temp;
+	int		i;
+	int		j;
+
+	
+	i = 0;
+	while (i < 3)
+	{
+		j = i;
+		while (j < 3)
+		{
+			if (points[j]->y > points[i]->y)
+			{
+				temp = points[j];
+				points[j] = points[i];
+				points[i] = temp;
+			}
+			j++;
+		}
+		i++;
+	}
+}
+
+// void	draw(t_env *env)
+// {
+// 	t_seg		*segs;
+// 	t_flat		*flats;
+
+// 	mlx_clear_window(env->mlx, env->window);
+// 	fill_segs_amd_flats(env, &segs, &flats);
+// 	remove_invisible_segs(&segs, &flats);
+// 	free_flats(&flats);
+// 	draw_segs(env, segs);
+// 	free_segs(&segs);
+// }
+
+// void	fill_segs_amd_flats(t_env *env, t_seg **segs, t_flat **flats)
+// {
+// 	t_point_row	*ps;
+// 	int			i;
+
+// 	*segs = get_seg(NULL, NULL);
+// 	*flats = NULL;
+// 	ps = env->pointset;
+// 	while (ps)
+// 	{
+// 		i = -1;
+// 		while (ps->points[++i])
+// 		{
+// 			if (i >= 1)
+// 				add_seg(segs, get_seg(get_rot_and_exp_point(env, ps->points[i - 1]),
+// 					get_rot_and_exp_point(env, ps->points[i])));
+// 			if (ps->next)
+// 				add_seg(segs, get_seg(get_rot_and_exp_point(env, ps->next->points[i]),
+// 					get_rot_and_exp_point(env, ps->points[i])));
+// 			if (i >= 1 && ps->next)
+// 				add_flat(flats, get_flat(get_rot_and_exp_point(env, ps->points[i - 1]),
+// 					get_rot_and_exp_point(env, ps->points[i]),
+// 					get_rot_and_exp_point(env, ps->next->points[i]),
+// 					get_rot_and_exp_point(env, ps->next->points[i - 1])));
+// 		}
+// 		ps = ps->next;
+// 	}
+// }
 
 void	remove_invisible_segs(t_seg **segs, t_flat **flats)
 {
