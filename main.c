@@ -2,7 +2,7 @@
 
 int		main(int argc, char **argv)
 {
-	t_env	*env;
+	t_env	env;
 	int		fd;
 
 	if (argc == 2)
@@ -12,34 +12,48 @@ int		main(int argc, char **argv)
 			exit(1);
 		env = get_env(fd);
 		close(fd);
-		draw_axis(env, WHITE);
-		draw(env);
-		mlx_hook(env->window, 2, 0, handle_key_press, env);
-		mlx_hook(env->window, 17, 0, (int (*)())&exit, env);
-		mlx_mouse_hook(env->window, &mouse_handle, env);
-		mlx_loop(env->mlx);
+		draw_axis(&env, WHITE);
+		draw(&env);
+		mlx_hook(env.window, 2, 0, handle_key_press, &env);
+		mlx_hook(env.window, 17, 0, (int (*)())&exit, &env);
+		mlx_mouse_hook(env.window, &mouse_handle, &env);
+		mlx_loop(env.mlx);
 	}
 }
 
-t_env	*get_env(int fd)
+t_z_buff_elem	**init_z_buff(t_env env)
 {
-	t_env	*env;
+	t_z_buff_elem	**z_buff;
+	int				y;
 
-	if (!(env = (t_env *)malloc(sizeof(t_env))))
+	if (!(z_buff = (t_z_buff_elem **)malloc(sizeof(t_z_buff_elem *) * env.w_height)))
+		exit(0);
+	y = -1;
+	while (++y < env.w_height)
+		if (!(z_buff[y] = (t_z_buff_elem *)malloc(sizeof(t_z_buff_elem) * env.w_width)))
+			exit(0);
+	return (z_buff);
+}
+
+t_env	get_env(int fd)
+{
+	t_env	env;
+
+	if (!(env.mlx = mlx_init()))
 		exit(1);
-	if (!(env->mlx = mlx_init()))
+	env.w_width = 1400;
+	env.w_height = 1200;
+	env.seglen = 15;
+	if (!(env.window = mlx_new_window(env.mlx, env.w_width, env.w_height,
+		"FDF")))
 		exit(1);
-	env->w_width = 1400;
-	env->w_height = 1200;
-	env->seglen = 15;
-	if (!(env->window = mlx_new_window(env->mlx, env->w_width, env->w_height, "FDF")))
-		exit(1);
-	set_figure(fd, env);
-	center_figure(env);
-	env->color = GREEN;
-	env->angle_x = 0;
-	env->angle_y = 0;
-	env->angle_z = 0;
+	set_figure(fd, &env);
+	center_figure(&env);
+	env.color = GREEN;
+	env.z_buff = init_z_buff(env);
+	env.angle_x = 0;
+	env.angle_y = 0;
+	env.angle_z = 0;
 	return (env);
 }
 
@@ -86,13 +100,13 @@ int		mouse_handle(int key, int x, int y, t_env *env)
 {
 	if (key == 4)
 	{
-		env->seglen < 120 ? env->seglen += 5 : 0;
+		env->seglen < 120 ? env->seglen += 1 : 0;
 		draw_axis(env, WHITE);
 		draw(env);
 	}
 	else if (key == 5)
 	{
-		env->seglen > 1 ? env->seglen -= 5 : 0;
+		env->seglen > 1 ? env->seglen -= 1 : 0;
 		draw_axis(env, WHITE);
 		draw(env);
 	}

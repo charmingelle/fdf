@@ -31,11 +31,17 @@
 #define Q 12
 #define E 14
 
+typedef struct	s_z_buff_elem
+{
+	double			z;
+	unsigned int	color;
+}				t_z_buff_elem;
+
 typedef struct	s_point
 {
-	double x;
-	double y;
-	double z;
+	double			x;
+	double			y;
+	double			z;
 }				t_point;
 
 typedef struct	s_point_row
@@ -43,6 +49,8 @@ typedef struct	s_point_row
 	t_point				**points;
 	struct s_point_row	*next;
 }				t_point_row;
+
+
 
 typedef struct  s_env {
     void            *mlx;
@@ -57,13 +65,15 @@ typedef struct  s_env {
     double          angle_z;
     int             color;
     double			seglen;
+    t_z_buff_elem	**z_buff;
 }               t_env;
 
 t_point 		*get_point(double x, double y, double z);
 
 int				handle_key_press(int keycode, t_env *env);
 
-t_point			**get_points_from_z_coords(t_env *env, char **z_coords, int row_number);
+t_point			**get_points_from_z_coords(t_env *env, char **z_coords,
+    int row_number);
 
 void			free_z_coords(char **z_coords);
 
@@ -75,7 +85,7 @@ void			add_point_row(t_point_row **point_row, t_point **points);
 
 void			draw(t_env *env);
 
-t_point			*get_rot_and_exp_point(t_env *env, t_point *point);
+t_point			get_rot_and_exp_point(t_env *env, t_point *point);
 
 int				equal_points(t_point *a, t_point *b);
 
@@ -83,7 +93,7 @@ int				is_point_in_pointset(t_point *point, t_point **pointset);
 
 double			get_z_index(t_point *start, t_point *end, double x, double y);
 
-t_env			*get_env(int fd);
+t_env			get_env(int fd);
 
 void			move_point(t_point *point, double x_shift, double y_shift);
 
@@ -91,21 +101,21 @@ void			center_figure(t_env *env);
 
 int				mouse_handle(int key, int x, int y, t_env *env);
 
-void			double_swap(double *a, double *b);
-
-void			point_swap(t_point *a, t_point *b);
+void            ft_swap(void **a, void **b);
 
 void			draw_triangle(t_env *env, t_point *a, t_point *b, t_point *c);
 
-void			draw_top_middle_half_triangle(t_env *env, t_point *top, t_point *middle, t_point *bottom);
+void			draw_top_middle_half_triangle(t_env *env, t_point *top,
+    t_point *middle, t_point *bottom);
 
-void			draw_middle_bottom_half_triangle(t_env *env, t_point *top, t_point *middle, t_point *bottom);
+void			draw_middle_bottom_half_triangle(t_env *env, t_point *top,
+    t_point *middle, t_point *bottom);
 
 void			draw_segs_and_triags(t_env *env);
 
 void			draw_seg(t_env *env, t_point *p1, t_point *p2);
 
-double			count_x_on_seg(t_env *env, t_point *start, t_point *end, double y);
+int             count_x_on_seg(t_env *env, t_point *start, t_point *end, double y);
 
 // funcs to delete
 

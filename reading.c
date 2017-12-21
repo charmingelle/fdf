@@ -16,6 +16,7 @@ void	set_figure(int fd, t_env *env)
 			exit(1);
 		add_point_row(&point_row, get_points_from_z_coords(env, z_coords, row_number));
 		free_z_coords(z_coords);
+		ft_memdel((void **)&row);
 		row_number++;
 	}
 	env->f_height = row_number;
