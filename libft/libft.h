@@ -16,8 +16,10 @@
 # include <unistd.h>
 # include <string.h>
 # include <stdlib.h>
+# include <fcntl.h>
 
 # define ABS(num)(num < 0 ? -num : num)
+# define BUFF_SIZE 100
 
 typedef struct		s_list
 {
@@ -25,6 +27,13 @@ typedef struct		s_list
 	size_t			content_size;
 	struct s_list	*next;
 }					t_list;
+
+
+typedef struct	s_fdlist {
+	int				fd;
+	char			*text;
+	struct s_fdlist	*next;
+}				t_fdlist;
 
 void				*ft_memset(void *b, int c, size_t len);
 
@@ -153,5 +162,7 @@ char				*ft_strshiftright(char *s);
 char				*ft_strshiftleft(char *s);
 
 void				ft_array_rotate(int *array, int len, int steps);
+
+int					get_next_line(const int fd, char **line);
 
 #endif

@@ -1,5 +1,4 @@
 #include "minilibx_macos/mlx.h"
-#include "get_next_line.h"
 #include "libft/libft.h"
 #include <unistd.h>
 #include <stdlib.h>
@@ -113,9 +112,11 @@ void			draw_middle_bottom_half_triangle(t_env *env, t_point *top,
 
 void			draw_segs_and_triags(t_env *env);
 
-void			draw_seg(t_env *env, t_point *p1, t_point *p2);
+void			draw_seg(t_env *env, t_point *p1, t_point *p2, int color);
 
 int             count_x_on_seg(t_env *env, t_point *start, t_point *end, double y);
+
+t_z_buff_elem   **init_z_buff(t_env env);
 
 // funcs to delete
 

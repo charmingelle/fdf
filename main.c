@@ -21,19 +21,6 @@ int		main(int argc, char **argv)
 	}
 }
 
-t_z_buff_elem	**init_z_buff(t_env env)
-{
-	t_z_buff_elem	**z_buff;
-	int				y;
-
-	if (!(z_buff = (t_z_buff_elem **)malloc(sizeof(t_z_buff_elem *) * env.w_height)))
-		exit(0);
-	y = -1;
-	while (++y < env.w_height)
-		if (!(z_buff[y] = (t_z_buff_elem *)malloc(sizeof(t_z_buff_elem) * env.w_width)))
-			exit(0);
-	return (z_buff);
-}
 
 t_env	get_env(int fd)
 {
@@ -77,6 +64,20 @@ void	center_figure(t_env *env)
 		}
 		ps = ps->next;
 	}
+}
+
+t_z_buff_elem	**init_z_buff(t_env env)
+{
+	t_z_buff_elem	**z_buff;
+	int				y;
+
+	if (!(z_buff = (t_z_buff_elem **)malloc(sizeof(t_z_buff_elem *) * env.w_height)))
+		exit(0);
+	y = -1;
+	while (++y < env.w_height)
+		if (!(z_buff[y] = (t_z_buff_elem *)malloc(sizeof(t_z_buff_elem) * env.w_width)))
+			exit(0);
+	return (z_buff);
 }
 
 int		handle_key_press(int keycode, t_env *env)
