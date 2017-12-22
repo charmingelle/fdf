@@ -72,7 +72,7 @@ void	sort(t_point *array)
 	i = -1;
 	while (++i < 3)
 	{
-		j = i;
+		j = i - 1;
 		while (++j < 3)
 			if (array[j].y > array[i].y)
 			{
@@ -104,14 +104,23 @@ void	draw_top_middle_half_triangle(t_env *env, t_point *top, t_point *middle, t_
 	t_point	temp1;
 	t_point	temp2;
 
-	if (top->y != middle->y)
+	y = top->y + 1;
+	y_limit = middle->y;
+	while (--y > y_limit)
 	{
-		y = top->y + 1;
-		y_limit = middle->y;
-		while (--y > y_limit)
+		if (ABS(top->y - middle->y) > 1.0 && ABS(top->y - bottom->y) > 1.0)
 		{
 			x_start = count_x_on_seg(env, top, middle, y);
 			x_end = count_x_on_seg(env, top, bottom, y);
+			// if (x_start < (-1000 + env->w_width / 2) || x_start > 1000 + (env->w_width / 2))
+			// 	printf("here");
+			if (x_end < (-1000 + env->w_width / 2) || x_end > 1000 + (env->w_width / 2))
+			{
+				printf("top->x = %g, top->y = %g, bottom->x = %g, bottom->y = %g, y = %d\n", top->x, top->y, bottom->x, bottom->y, y);
+				printf("top->y == bottom->y = %d\n", (int)top->y == (int)bottom->y);
+				printf("(int)top->y = %d\n", (int)top->y);
+				printf("(int)bottom->y = %d\n", (int)bottom->y);
+			}
 			temp1.x = x_start;
 			temp1.y = y;
 			temp2.x = x_end;
@@ -130,14 +139,18 @@ void	draw_middle_bottom_half_triangle(t_env *env, t_point *top, t_point *middle,
 	t_point	temp1;
 	t_point	temp2;
 	
-	if (middle->y != bottom->y)
+	y = middle->y + 1;
+	y_limit = bottom->y;
+	while (--y > y_limit)
 	{
-		y = middle->y + 1;
-		y_limit = bottom->y;
-		while (--y > y_limit)
+		if (ABS(middle->y - bottom->y) > 1.0 && ABS(top->y - bottom->y) > 1.0)
 		{
 			x_start = count_x_on_seg(env, middle, bottom, y);
 			x_end = count_x_on_seg(env, top, bottom, y);
+			// if (x_start < (-1000 + env->w_width / 2) || x_start > 1000 + (env->w_width / 2))
+			// 	printf("here");
+			if (x_end < (-1000 + env->w_width / 2) || x_end > 1000 + (env->w_width / 2))
+				printf("here2\n");
 			temp1.x = x_start;
 			temp1.y = y;
 			temp2.x = x_end;
@@ -149,17 +162,94 @@ void	draw_middle_bottom_half_triangle(t_env *env, t_point *top, t_point *middle,
 
 int	count_x_on_seg(t_env *env, t_point *start, t_point *end, double y)
 {
-	double	x_start;
-	double	y_start;
-	double	x_end;
-	double	y_end;
-
-	x_start = start->x;
-	y_start = start->y;
-	x_end = end->x;
-	y_end = end->y;
-	return (((x_start - x_end) * y + x_end * y_start - y_end * x_start) / (y_start - y_end));
+	return (((start->x - end->x) * y + end->x * start->y - end->y * start->x) / (start->y - end->y));
 }
+
+// void	draw_top_middle_half_triangle(t_env *env, t_point *top, t_point *middle, t_point *bottom)
+// {
+// 	int		y;
+// 	int		y_limit;
+// 	int		x_start;
+// 	int		x_end;
+// 	int		temp;
+// 	double	z;
+
+// 	y = top->y + (env->w_height / 2) + 1;
+// 	y_limit = middle->y + (env->w_height / 2);
+// 	while (--y > y_limit)
+// 	{
+// 		x_start = count_x_on_seg(env, top, middle, y);
+// 		x_end = count_x_on_seg(env, top, bottom, y);
+// 		if (x_start > x_end)
+// 		{
+// 			temp = x_start;
+// 			x_start = x_end;
+// 			x_end = temp;
+// 		}
+// 		while (x_start < x_end)
+// 		{
+// 			z = (middle->z - top->z) * (x_start - top->x + (env->w_height / 2)) / (middle->x + (env->w_height / 2) - top->x + (env->w_height / 2)) + top->z;
+// 			// z != 0 ? printf("z = %g\n", z) : 0;
+// 			if ((y >= 0 && y < env->w_height && x_start >= 0 && x_start < env->w_width)
+// 				&& (!env->z_buff[y][x_start].color || env->z_buff[y][x_start].z <= z))
+// 			{
+// 				env->z_buff[y][x_start] = (t_z_buff_elem){.z = z, .color = RED};
+// 				mlx_pixel_put(env->mlx, env->window, x_start, y, RED);
+// 			}
+// 			x_start++;
+// 		}
+// 	}
+// }
+
+// void	draw_middle_bottom_half_triangle(t_env *env, t_point *top, t_point *middle, t_point *bottom)
+// {
+// 	int		y;
+// 	int		y_limit;
+// 	int		x_start;
+// 	int		x_end;
+// 	int		temp;
+// 	double	z;
+	
+// 	y = middle->y + (env->w_height / 2) + 1;
+// 	y_limit = bottom->y + (env->w_height / 2);
+// 	while (--y > y_limit)
+// 	{
+// 		x_start = count_x_on_seg(env, middle, bottom, y);
+// 		x_end = count_x_on_seg(env, top, bottom, y);
+// 		if (x_start > x_end)
+// 		{
+// 			temp = x_start;
+// 			x_start = x_end;
+// 			x_end = temp;
+// 		}
+// 		while (x_start < x_end)
+// 		{
+// 			z = (bottom->z - middle->z) * (x_start - middle->x + (env->w_height / 2)) / (bottom->x + (env->w_height / 2) - middle->x + (env->w_height / 2)) + middle->z;
+// 			// z != 0 ? printf("z = %g\n", z) : 0;
+// 			if ((y >= 0 && y < env->w_height && x_start >= 0 && x_start < env->w_width)
+// 				&& (!env->z_buff[y][x_start].color || env->z_buff[y][x_start].z <= z))
+// 			{
+// 				env->z_buff[y][x_start] = (t_z_buff_elem){.z = z, .color = RED};
+// 				mlx_pixel_put(env->mlx, env->window, x_start, y, RED);
+// 			}
+// 			x_start++;
+// 		}
+// 	}
+// }
+
+// int	count_x_on_seg(t_env *env, t_point *start, t_point *end, double y)
+// {
+// 	double	x_start;
+// 	double	y_start;
+// 	double	x_end;
+// 	double	y_end;
+
+// 	x_start = start->x + env->w_width / 2;
+// 	y_start = start->y + env->w_height / 2;
+// 	x_end = end->x + env->w_width / 2;
+// 	y_end = end->y + env->w_height / 2;
+// 	return (((x_start - x_end) * y + x_end * y_start - y_end * x_start) / (y_start - y_end));
+// }
 
 void	draw_seg(t_env *env, t_point *p1, t_point *p2, int color)
 {
@@ -177,11 +267,15 @@ void	draw_seg(t_env *env, t_point *p1, t_point *p2, int color)
 	y1 = p1->y + env->w_height / 2;
 	x2 = p2->x + env->w_width / 2;
 	y2 = p2->y + env->w_height / 2;
+	if (x1 == x2 && y1 == y2)
+		return ;
 	step = 0.5 / sqrt(pow(x1 - x2, 2) + pow(y1 - y2, 2));
 	t = 0;
-	while (t <= 1)
+	while (t < 1)
 	{
 		x = (x2 - x1) * t + x1;
+		// if (x > 1000)
+		// 	printf("p1->x = %g, p2->x = %g\n", p1->x, p2->x);
 		y = (y2 - y1) * t + y1;
 		z = (p2->z - p1->z) * t + p1->z;
 		// z != 0 ? printf("z = %g, p1->z = %g, p2->z = %g, t = %g\n", z, p1->z, p2->z, t): 0;
