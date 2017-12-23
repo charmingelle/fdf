@@ -84,7 +84,7 @@ void			add_point_row(t_point_row **point_row, t_point **points);
 
 void			draw(t_env *env);
 
-t_point			get_rot_and_exp_point(t_env *env, t_point *point);
+t_point			get_modified_point(t_env *env, t_point *point);
 
 int				equal_points(t_point *a, t_point *b);
 

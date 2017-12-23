@@ -28,8 +28,8 @@ t_env	get_env(int fd)
 
 	if (!(env.mlx = mlx_init()))
 		exit(1);
-	env.w_width = 1400;
-	env.w_height = 1200;
+	env.w_width = 800;
+	env.w_height = 600;
 	env.seglen = 15;
 	if (!(env.window = mlx_new_window(env.mlx, env.w_width, env.w_height,
 		"FDF")))
