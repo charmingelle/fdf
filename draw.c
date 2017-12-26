@@ -104,6 +104,13 @@ void	draw_top_middle_half_triangle(t_env *env, t_point *top, t_point *middle, t_
 	t_point	temp1;
 	t_point	temp2;
 
+	int		t1;
+	int		t2;
+	double	z_start;
+	double	z_end;
+
+	// t = (y - y1) / (y2 - y1);
+	// z = (z2 - z1) * t + z1;
 	y = top->y + 1;
 	y_limit = middle->y;
 	while (--y > y_limit)
@@ -114,6 +121,14 @@ void	draw_top_middle_half_triangle(t_env *env, t_point *top, t_point *middle, t_
 			temp1.y = y;
 			temp2.x = x_end;
 			temp2.y = y;
+
+			t1 = (y - top->y) / (middle->y - top->y);
+			z_start = (middle->z - top->z) * t1 + top->z;
+			t2 = (y - top->y) / (bottom->y - top->y);
+			z_end = (bottom->z - top->z) * t2 + top->z;
+			temp1.z = z_start;
+			temp2.z = z_end;
+
 			draw_seg(env, &temp1, &temp2, RED);
 	}
 }
@@ -126,6 +141,11 @@ void	draw_middle_bottom_half_triangle(t_env *env, t_point *top, t_point *middle,
 	int		x_end;
 	t_point	temp1;
 	t_point	temp2;
+
+	int		t1;
+	int		t2;
+	double	z_start;
+	double	z_end;
 	
 	y = middle->y + 1;
 	y_limit = bottom->y;
@@ -137,6 +157,14 @@ void	draw_middle_bottom_half_triangle(t_env *env, t_point *top, t_point *middle,
 		temp1.y = y;
 		temp2.x = x_end;
 		temp2.y = y;
+
+		t1 = (y - middle->y) / (bottom->y - middle->y);
+		z_start = (bottom->z - middle->z) * t1 + middle->z;
+		t2 = (y - top->y) / (bottom->y - top->y);
+		z_end = (bottom->z - top->z) * t2 + top->z;
+		temp1.z = z_start;
+		temp2.z = z_end;
+
 		draw_seg(env, &temp1, &temp2, RED);
 	}
 }
@@ -163,16 +191,15 @@ void	draw_seg(t_env *env, t_point *p1, t_point *p2, int color)
 	int		y;
 	double	z;
 
-	step = 0.5 / sqrt(pow(p1->x - p2->x, 2) + pow(p1->x - p2->x, 2));
+	step = 0.5 / sqrt(pow(p1->x - p2->x, 2) + pow(p1->y - p2->y, 2));
 	t = 0;
 	while (t <= 1)
 	{
 		x = (p2->x - p1->x) * t + p1->x;
 		y = (p2->y - p1->y) * t + p1->y;
-		z = round((p2->z - p1->z) * t + p1->z);
-		// z != 0 ? printf("z = %g, p1->z = %g, p2->z = %g, t = %g\n", z, p1->z, p2->z, t): 0;
+		z = (p2->z - p1->z) * t + p1->z;
 		if ((y >= 0 && y < env->w_height && x >= 0 &&  x < env->w_width)
-			&& (!env->z_buff[y][x].color || env->z_buff[y][x].z < z))
+			&& (!env->z_buff[y][x].color || env->z_buff[y][x].z <= z))
 		{
 			env->z_buff[y][x] = (t_z_buff_elem){.z = z, .color = color};
 			mlx_pixel_put(env->mlx, env->window, x, y, color);
