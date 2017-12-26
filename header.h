@@ -6,12 +6,14 @@
 #include <stdio.h>
 
 #define WHITE 0xAAAAAA
-#define BLACK 0x000001
+#define BASIC_COLOR 0xAAAAAA
+#define BLACK 0x000000
 #define GREEN 0x008000
 #define RED 0xFF0000
 #define LIME 0x00FF00
 #define BLUE 0x0000FF
 #define YELLOW 0xFFFF00
+#define COLOR_OF_ONES 0xFFFFFF
 
 #define ESC 53
 #define W 13
@@ -32,6 +34,7 @@ typedef struct	s_point
 	double			x;
 	double			y;
 	double			z;
+    int             color;
 }				t_point;
 
 typedef struct	s_point_row
@@ -48,15 +51,14 @@ typedef struct  s_env {
     t_point_row     *pointset;
     int             f_width;
     int             f_height;
-    int          angle_x;
-    int          angle_y;
-    int          angle_z;
-    int             color;
+    int				angle_x;
+    int				angle_y;
+    int				angle_z;
     double			seglen;
     t_z_buff_elem	**z_buff;
 }               t_env;
 
-t_point 		*get_point(double x, double y, double z);
+t_point 		*get_point(double x, double y, double z, int color);
 
 int				handle_key_press(int keycode, t_env *env);
 
@@ -101,7 +103,7 @@ void			draw_middle_bottom_half_triangle(t_env *env, t_point *top,
 
 void			draw_segs_and_triags(t_env *env);
 
-void			draw_seg(t_env *env, t_point *p1, t_point *p2, int color);
+void			draw_seg(t_env *env, t_point *p1, t_point *p2);
 
 int             count_x_on_seg(t_env *env, t_point *start, t_point *end, double y);
 

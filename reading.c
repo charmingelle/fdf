@@ -27,7 +27,8 @@ t_point		**get_points_from_z_coords(t_env *env, char **z_coords, int row_number)
 {
 	t_point	**points;
 	int		i;
-	
+	char	**z_coord_and_color;
+
 	env->f_width = 0;
 	while (z_coords[env->f_width])
 		env->f_width++;
@@ -36,7 +37,12 @@ t_point		**get_points_from_z_coords(t_env *env, char **z_coords, int row_number)
 	i = 0;
 	while (i < env->f_width)
 	{
-		points[i] = get_point(i, row_number, ft_atoi(z_coords[i]));
+		z_coord_and_color = ft_strsplit(z_coords[i], ',');
+		if (z_coord_and_color[1] == 0)
+			points[i] = get_point(i, row_number, ft_atoi(z_coord_and_color[0]), BASIC_COLOR);
+		else
+			points[i] = get_point(i, row_number, ft_atoi(z_coord_and_color[0]), ft_atoi(z_coord_and_color[1]));
+		free_z_coords(z_coord_and_color);
 		i++;
 	}
 	points[i] = NULL;

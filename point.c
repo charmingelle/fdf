@@ -1,6 +1,6 @@
 #include "header.h"
 
-t_point *get_point(double x, double y, double z)
+t_point *get_point(double x, double y, double z, int color)
 {
 	t_point *point;
 
@@ -8,6 +8,7 @@ t_point *get_point(double x, double y, double z)
 	point->x = x;
 	point->y = y;
 	point->z = z;
+	point->color = color;
 	return (point);
 }
 

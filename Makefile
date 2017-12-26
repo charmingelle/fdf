@@ -4,7 +4,7 @@ CC		=	gcc
 
 CFLAGS 	=	-Wall
 
-SOURCE	= 	draw.c funcs_to_delete.c main.c point_row.c rotate.c reading.c point.c utils.c
+SOURCE	= 	draw.c funcs_to_delete.c main.c point_row.c mutate.c reading.c point.c utils.c
 
 HEADERS	=	header.h
 

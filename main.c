@@ -36,7 +36,7 @@ t_env	get_env(int fd)
 		exit(1);
 	set_figure(fd, &env);
 	center_figure(&env);
-	env.color = GREEN;
+	// env.color = GREEN;
 	env.z_buff = init_z_buff(env);
 	env.angle_x = 0;
 	env.angle_y = 0;
