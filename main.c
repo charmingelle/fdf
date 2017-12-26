@@ -28,8 +28,8 @@ t_env	get_env(int fd)
 
 	if (!(env.mlx = mlx_init()))
 		exit(1);
-	env.w_width = 800;
-	env.w_height = 600;
+	env.w_width = 1200;
+	env.w_height = 1200;
 	env.seglen = 15;
 	if (!(env.window = mlx_new_window(env.mlx, env.w_width, env.w_height,
 		"FDF")))
@@ -86,12 +86,12 @@ int		handle_key_press(int keycode, t_env *env)
 
 	change_flag = 0;
 	keycode == ESC ? exit(0) : 0;
-	keycode == A && ++change_flag ? (env->angle_y += DEGREE5) : 0;
-	keycode == D && ++change_flag ? (env->angle_y -= DEGREE5) : 0;
-	keycode == W && ++change_flag ? (env->angle_x -= DEGREE5) : 0;
-	keycode == S && ++change_flag ? (env->angle_x += DEGREE5) : 0;
-	keycode == Q && ++change_flag ? (env->angle_z += DEGREE5) : 0;
-	keycode == E && ++change_flag ? (env->angle_z -= DEGREE5) : 0;
+	keycode == A && ++change_flag ? (env->angle_y = (env->angle_y + 5) % 360) : 0;
+	keycode == D && ++change_flag ? (env->angle_y = (env->angle_y - 5) % 360) : 0;
+	keycode == W && ++change_flag ? (env->angle_x = (env->angle_x - 5) % 360) : 0;
+	keycode == S && ++change_flag ? (env->angle_x = (env->angle_x + 5) % 360) : 0;
+	keycode == Q && ++change_flag ? (env->angle_z = (env->angle_z + 5) % 360) : 0;
+	keycode == E && ++change_flag ? (env->angle_z = (env->angle_z - 5) % 360) : 0;
 	change_flag ? draw_axis(env, WHITE) : 0;
 	change_flag ? draw(env) : 0;
 	return (0);

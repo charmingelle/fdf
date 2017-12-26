@@ -6,22 +6,13 @@
 #include <stdio.h>
 
 #define WHITE 0xAAAAAA
+#define BLACK 0x000001
 #define GREEN 0x008000
 #define RED 0xFF0000
 #define LIME 0x00FF00
 #define BLUE 0x0000FF
 #define YELLOW 0xFFFF00
-#define DEGREE45 0.785398
-#define DEGREE5 0.0872665
-#define DEGREE90 1.5708
-#define DEGREE225 3.92699
-#define DEGREE180 3.14159
 
-#define Rx 3.92699
-#define Ry 0
-#define Rz 1.5708
-
-#define RAD1 1
 #define ESC 53
 #define W 13
 #define A 0
@@ -49,8 +40,6 @@ typedef struct	s_point_row
 	struct s_point_row	*next;
 }				t_point_row;
 
-
-
 typedef struct  s_env {
     void            *mlx;
     void            *window;
@@ -59,9 +48,9 @@ typedef struct  s_env {
     t_point_row     *pointset;
     int             f_width;
     int             f_height;
-    double          angle_x;
-    double          angle_y;
-    double          angle_z;
+    int          angle_x;
+    int          angle_y;
+    int          angle_z;
     int             color;
     double			seglen;
     t_z_buff_elem	**z_buff;
@@ -117,6 +106,8 @@ void			draw_seg(t_env *env, t_point *p1, t_point *p2, int color);
 int             count_x_on_seg(t_env *env, t_point *start, t_point *end, double y);
 
 t_z_buff_elem   **init_z_buff(t_env env);
+
+double          degree_to_rad(int degree);
 
 // funcs to delete
 
