@@ -97,75 +97,45 @@ void	draw_triangle(t_env *env, t_point *a, t_point *b, t_point *c)
 
 void	draw_top_middle_half_triangle(t_env *env, t_point *top, t_point *middle, t_point *bottom)
 {
-	int		y;
-	int		y_limit;
-	int		x_start;
-	int		x_end;
 	t_point	temp1;
 	t_point	temp2;
+	double	t;
+	double	step;
 
-	int		t1;
-	int		t2;
-	double	z_start;
-	double	z_end;
-
-	// t = (y - y1) / (y2 - y1);
-	// z = (z2 - z1) * t + z1;
-	y = top->y + 1;
-	y_limit = middle->y;
-	while (--y > y_limit)
+	step = 0.5 / fabs(middle->y - top->y);
+	t = 0;
+	while (t <= 1)
 	{
-			x_start = count_x_on_seg(env, top, middle, y);
-			x_end = count_x_on_seg(env, top, bottom, y);
-			temp1.x = x_start;
-			temp1.y = y;
-			temp2.x = x_end;
-			temp2.y = y;
-
-			t1 = (y - top->y) / (middle->y - top->y);
-			z_start = (middle->z - top->z) * t1 + top->z;
-			t2 = (y - top->y) / (bottom->y - top->y);
-			z_end = (bottom->z - top->z) * t2 + top->z;
-			temp1.z = z_start;
-			temp2.z = z_end;
-
-			draw_seg(env, &temp1, &temp2, RED);
+		temp1.x = (middle->x - top->x) * t + top->x;
+		temp1.y = (middle->y - top->y) * t + top->y;
+		temp1.z = (middle->z - top->z) * t + top->z;
+		temp2.x = (bottom->x - top->x) * t + top->x;
+		temp2.y = (bottom->y - top->y) * t + top->y;
+		temp2.z = (bottom->z - top->z) * t + top->z;
+		draw_seg(env, &temp1, &temp2, RED);
+		t += step;
 	}
 }
 
 void	draw_middle_bottom_half_triangle(t_env *env, t_point *top, t_point *middle, t_point *bottom)
 {
-	int		y;
-	int		y_limit;
-	int		x_start;
-	int		x_end;
 	t_point	temp1;
 	t_point	temp2;
-
-	int		t1;
-	int		t2;
-	double	z_start;
-	double	z_end;
+	double	t;
+	double	step;
 	
-	y = middle->y + 1;
-	y_limit = bottom->y;
-	while (--y > y_limit)
+	step = 0.5 / fabs(bottom->y - middle->y);
+	t = 0;
+	while (t <= 1)
 	{
-		x_start = count_x_on_seg(env, middle, bottom, y);
-		x_end = count_x_on_seg(env, top, bottom, y);
-		temp1.x = x_start;
-		temp1.y = y;
-		temp2.x = x_end;
-		temp2.y = y;
-
-		t1 = (y - middle->y) / (bottom->y - middle->y);
-		z_start = (bottom->z - middle->z) * t1 + middle->z;
-		t2 = (y - top->y) / (bottom->y - top->y);
-		z_end = (bottom->z - top->z) * t2 + top->z;
-		temp1.z = z_start;
-		temp2.z = z_end;
-
+		temp1.x = (middle->x - bottom->x) * t + bottom->x;
+		temp1.y = (middle->y - bottom->y) * t + bottom->y;
+		temp1.z = (middle->z - bottom->z) * t + bottom->z;
+		temp2.x = (top->x - bottom->x) * t + bottom->x;
+		temp2.y = (top->y - bottom->y) * t + bottom->y;
+		temp2.z = (top->z - bottom->z) * t + bottom->z;
 		draw_seg(env, &temp1, &temp2, RED);
+		t += step;
 	}
 }
 
@@ -207,6 +177,132 @@ void	draw_seg(t_env *env, t_point *p1, t_point *p2, int color)
 		t += step;
 	}
 }
+
+// void	draw_top_middle_half_triangle(t_env *env, t_point *top, t_point *middle, t_point *bottom)
+// {
+// 	int		y;
+// 	int		y_limit;
+// 	t_point	temp1;
+// 	t_point	temp2;
+// 	int		t1;
+// 	int		t2;
+
+// 	y = top->y + 1;
+// 	y_limit = middle->y;
+// 	while (--y > y_limit)
+// 	{
+// 			t1 = (y - top->y) / (middle->y - top->y);
+// 			t2 = (y - top->y) / (bottom->y - top->y);
+// 			temp1.x = count_x_on_seg(env, top, middle, y);
+// 			temp1.y = y;
+// 			temp1.z = (middle->z - top->z) * t1 + top->z;
+// 			temp2.x = count_x_on_seg(env, top, bottom, y);
+// 			temp2.y = y;
+// 			temp2.z = (bottom->z - top->z) * t2 + top->z;
+// 			draw_seg(env, &temp1, &temp2, RED);
+// 	}
+// }
+
+// void	draw_middle_bottom_half_triangle(t_env *env, t_point *top, t_point *middle, t_point *bottom)
+// {
+// 	int		y;
+// 	int		y_limit;
+// 	t_point	temp1;
+// 	t_point	temp2;
+// 	int		t1;
+// 	int		t2;
+	
+// 	y = middle->y + 1;
+// 	y_limit = bottom->y;
+// 	while (--y > y_limit)
+// 	{
+// 		t1 = (y - middle->y) / (bottom->y - middle->y);
+// 		t2 = (y - top->y) / (bottom->y - top->y);
+// 		temp1.x = count_x_on_seg(env, middle, bottom, y);
+// 		temp1.y = y;
+// 		temp1.z = (bottom->z - middle->z) * t1 + middle->z;
+// 		temp2.x = count_x_on_seg(env, top, bottom, y);
+// 		temp2.y = y;
+// 		temp2.z = (bottom->z - top->z) * t2 + top->z;
+// 		draw_seg(env, &temp1, &temp2, RED);
+// 	}
+// }
+
+// void	draw_top_middle_half_triangle(t_env *env, t_point *top, t_point *middle, t_point *bottom)
+// {
+// 	int		y;
+// 	int		y_limit;
+// 	int		x_start;
+// 	int		x_end;
+// 	t_point	temp1;
+// 	t_point	temp2;
+
+// 	int		t1;
+// 	int		t2;
+// 	double	z_start;
+// 	double	z_end;
+
+// 	// t = (y - y1) / (y2 - y1);
+// 	// z = (z2 - z1) * t + z1;
+// 	y = top->y + 1;
+// 	y_limit = middle->y;
+// 	while (--y > y_limit)
+// 	{
+// 			x_start = count_x_on_seg(env, top, middle, y);
+// 			x_end = count_x_on_seg(env, top, bottom, y);
+// 			temp1.x = x_start;
+// 			temp1.y = y;
+// 			temp2.x = x_end;
+// 			temp2.y = y;
+
+// 			t1 = (y - top->y) / (middle->y - top->y);
+// 			z_start = (middle->z - top->z) * t1 + top->z;
+// 			t2 = (y - top->y) / (bottom->y - top->y);
+// 			z_end = (bottom->z - top->z) * t2 + top->z;
+// 			temp1.z = z_start;
+// 			temp2.z = z_end;
+
+// 			draw_seg(env, &temp1, &temp2, RED);
+// 	}
+// }
+
+
+// void	draw_middle_bottom_half_triangle(t_env *env, t_point *top, t_point *middle, t_point *bottom)
+// {
+// 	int		y;
+// 	int		y_limit;
+// 	int		x_start;
+// 	int		x_end;
+// 	t_point	temp1;
+// 	t_point	temp2;
+
+// 	int		t1;
+// 	int		t2;
+// 	double	z_start;
+// 	double	z_end;
+	
+// 	y = middle->y + 1;
+// 	y_limit = bottom->y;
+// 	while (--y > y_limit)
+// 	{
+// 		x_start = count_x_on_seg(env, middle, bottom, y);
+// 		x_end = count_x_on_seg(env, top, bottom, y);
+// 		temp1.x = x_start;
+// 		temp1.y = y;
+// 		temp2.x = x_end;
+// 		temp2.y = y;
+
+// 		t1 = (y - middle->y) / (bottom->y - middle->y);
+// 		z_start = (bottom->z - middle->z) * t1 + middle->z;
+// 		t2 = (y - top->y) / (bottom->y - top->y);
+// 		z_end = (bottom->z - top->z) * t2 + top->z;
+// 		temp1.z = z_start;
+// 		temp2.z = z_end;
+
+// 		draw_seg(env, &temp1, &temp2, RED);
+// 	}
+// }
+
 
 // int	count_x_on_seg(t_env *env, t_point *start, t_point *end, double y)
 // {
