@@ -1,6 +1,6 @@
 #include "header.h"
 
-t_point_row	*get_point_row(t_point **points)
+static t_point_row	*get_point_row(t_point **points)
 {
 	t_point_row *point_row;
 
@@ -11,7 +11,7 @@ t_point_row	*get_point_row(t_point **points)
 	return (point_row);
 }
 
-void		add_point_row(t_point_row **point_row, t_point **points)
+void				add_point_row(t_point_row **point_row, t_point **points)
 {
 	t_point_row *new;
 

@@ -69,8 +69,6 @@ void			free_z_coords(char **z_coords);
 
 void			set_figure(int fd, t_env *env);
 
-t_point_row		*get_point_row(t_point **points);
-
 void			add_point_row(t_point_row **point_row, t_point **points);
 
 void			draw(t_env *env);
