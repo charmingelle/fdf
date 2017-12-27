@@ -4,9 +4,9 @@ CC		=	gcc
 
 CFLAGS 	=	-Wall
 
-SOURCE	= 	draw.c funcs_to_delete.c main.c point_row.c mutate.c reading.c point.c utils.c
+SOURCE	= 	source/draw.c source/funcs_to_delete.c source/main.c source/mutate.c source/point.c source/point_row.c source/reading.c source/utils.c
 
-HEADERS	=	header.h
+HEADERS	=	source/header.h
 
 LIBS	=	libft/libft.a minilibx_macos/libmlx.a
 
