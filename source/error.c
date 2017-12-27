@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   draw.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: grevenko <grevenko@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2017/12/18 14:11:15 by grevenko          #+#    #+#             */
+/*   Updated: 2017/12/22 13:24:51 by grevenko         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "header.h"
 
 int	show_invalid_color_error(void)
@@ -8,7 +20,8 @@ int	show_invalid_color_error(void)
 
 int	show_invalid_size_error(void)
 {
-	write(1, "The lines of the map do not contain equal amounts of points\n", 60);
+	write(1, "The lines of the map do not contain equal amounts of points\n",
+		60);
 	return (1);
 }
 

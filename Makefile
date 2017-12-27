@@ -2,7 +2,7 @@ NAME	=	fdf
 
 CC		=	gcc
 
-CFLAGS 	=	-Wall
+CFLAGS 	=	-Wall -Wextra -Werror
 
 SOURCE	= 	source/draw.c source/error.c source/funcs_to_delete.c source/main.c source/mutate.c source/point.c source/point_row.c source/reading.c source/utils.c
 
