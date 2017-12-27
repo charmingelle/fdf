@@ -41,7 +41,7 @@ t_point		**get_points_from_z_coords(t_env *env, char **z_coords, int row_number)
 		if (z_coord_and_color[1] == 0)
 			points[i] = get_point(i, row_number, ft_atoi(z_coord_and_color[0]), BASIC_COLOR);
 		else
-			points[i] = get_point(i, row_number, ft_atoi(z_coord_and_color[0]), ft_atoi(z_coord_and_color[1]));
+			points[i] = get_point(i, row_number, ft_atoi(z_coord_and_color[0]), ft_atoi_hex_color(z_coord_and_color[1]));
 		free_z_coords(z_coord_and_color);
 		i++;
 	}

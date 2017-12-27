@@ -111,6 +111,8 @@ t_z_buff_elem   **init_z_buff(t_env env);
 
 double          degree_to_rad(int degree);
 
+unsigned int	ft_atoi_hex_color(char *s);
+
 // funcs to delete
 
 void			print_point(t_point *point);
