@@ -122,8 +122,8 @@ static void	draw_segs_and_triags(t_env *env)
 				draw_seg(env, &rect[1], &rect[2]);
 				draw_seg(env, &rect[2], &rect[3]);
 				draw_seg(env, &rect[3], &rect[0]);
-				draw_triang(env, &rect[0], &rect[1], &rect[2]);
-				draw_triang(env, &rect[0], &rect[3], &rect[2]);
+				env->bonus ? draw_triang(env, &rect[0], &rect[1], &rect[2]) : 0;
+				env->bonus ? draw_triang(env, &rect[0], &rect[3], &rect[2]) : 0;
 			}
 		ps = ps->next;
 	}

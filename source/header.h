@@ -71,6 +71,7 @@ typedef struct	s_env {
 	int				ang_z;
 	double			seglen;
 	t_z_buff_elem	**z_buff;
+	int				bonus;
 }				t_env;
 
 t_point			*get_point(double x, double y, double z, int color);
