@@ -5,7 +5,7 @@ static t_point_row	*get_point_row(t_point **points)
 	t_point_row *point_row;
 
 	if (!(point_row = (t_point_row *)malloc(sizeof(t_point_row))))
-		exit(1);
+		exit(show_malloc_error());
 	point_row->points = points;
 	point_row->next = NULL;
 	return (point_row);

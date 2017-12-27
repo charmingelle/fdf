@@ -1,50 +1,54 @@
 #include "header.h"
 
-int		main(int argc, char **argv)
+static int		mouse_handle(int key, int x, int y, t_env *env)
 {
-	t_env	env;
-	int		fd;
-
-	if (argc == 2)
+	if (key == 4)
 	{
-		fd = open(argv[1], O_RDONLY);
-		if (fd == -1)
-			exit(1);
-		env = get_env(fd);
-		close(fd);
-		draw_axis(&env, WHITE);
-		draw(&env);
-		mlx_hook(env.window, 2, 0, handle_key_press, &env);
-		mlx_hook(env.window, 17, 0, (int (*)())&exit, &env);
-		mlx_mouse_hook(env.window, &mouse_handle, &env);
-		mlx_loop(env.mlx);
+		env->seglen < 120 ? env->seglen += 1 : 0;
+		draw_axis(env, WHITE);
+		draw(env);
 	}
+	else if (key == 5)
+	{
+		env->seglen > 1 ? env->seglen -= 1 : 0;
+		draw_axis(env, WHITE);
+		draw(env);
+	}
+	return (0);
 }
 
-
-t_env	get_env(int fd)
+static int		handle_key_press(int keycode, t_env *env)
 {
-	t_env	env;
+	int	change_flag;
 
-	if (!(env.mlx = mlx_init()))
-		exit(1);
-	env.w_width = 1200;
-	env.w_height = 1200;
-	env.seglen = 15;
-	if (!(env.window = mlx_new_window(env.mlx, env.w_width, env.w_height,
-		"FDF")))
-		exit(1);
-	set_figure(fd, &env);
-	center_figure(&env);
-	// env.color = GREEN;
-	env.z_buff = init_z_buff(env);
-	env.angle_x = 0;
-	env.angle_y = 0;
-	env.angle_z = 0;
-	return (env);
+	change_flag = 0;
+	keycode == ESC ? exit(0) : 0;
+	keycode == A && ++change_flag ? (env->angle_y = (env->angle_y + 5) % 360) : 0;
+	keycode == D && ++change_flag ? (env->angle_y = (env->angle_y - 5) % 360) : 0;
+	keycode == W && ++change_flag ? (env->angle_x = (env->angle_x - 5) % 360) : 0;
+	keycode == S && ++change_flag ? (env->angle_x = (env->angle_x + 5) % 360) : 0;
+	keycode == Q && ++change_flag ? (env->angle_z = (env->angle_z + 5) % 360) : 0;
+	keycode == E && ++change_flag ? (env->angle_z = (env->angle_z - 5) % 360) : 0;
+	change_flag ? draw_axis(env, WHITE) : 0;
+	change_flag ? draw(env) : 0;
+	return (0);
 }
 
-void	center_figure(t_env *env)
+static t_z_buff_elem	**init_z_buff(t_env env)
+{
+	t_z_buff_elem	**z_buff;
+	int				y;
+
+	if (!(z_buff = (t_z_buff_elem **)malloc(sizeof(t_z_buff_elem *) * env.w_height)))
+		exit(show_malloc_error());
+	y = -1;
+	while (++y < env.w_height)
+		if (!(z_buff[y] = (t_z_buff_elem *)malloc(sizeof(t_z_buff_elem) * env.w_width)))
+			exit(show_malloc_error());
+	return (z_buff);
+}
+
+static void	center_figure(t_env *env)
 {
 	t_point_row	*ps;
 	double		x_center;
@@ -66,50 +70,46 @@ void	center_figure(t_env *env)
 	}
 }
 
-t_z_buff_elem	**init_z_buff(t_env env)
+static t_env	get_env(int fd)
 {
-	t_z_buff_elem	**z_buff;
-	int				y;
+	t_env	env;
 
-	if (!(z_buff = (t_z_buff_elem **)malloc(sizeof(t_z_buff_elem *) * env.w_height)))
-		exit(0);
-	y = -1;
-	while (++y < env.w_height)
-		if (!(z_buff[y] = (t_z_buff_elem *)malloc(sizeof(t_z_buff_elem) * env.w_width)))
-			exit(0);
-	return (z_buff);
+	if (!(env.mlx = mlx_init()))
+		exit(1);
+	env.w_width = 1200;
+	env.w_height = 1200;
+	env.seglen = 15;
+	if (!(env.window = mlx_new_window(env.mlx, env.w_width, env.w_height,
+		"FDF")))
+		exit(1);
+	set_figure(fd, &env);
+	center_figure(&env);
+	env.z_buff = init_z_buff(env);
+	env.angle_x = 0;
+	env.angle_y = 0;
+	env.angle_z = 0;
+	return (env);
 }
 
-int		handle_key_press(int keycode, t_env *env)
+int		main(int argc, char **argv)
 {
-	int	change_flag;
+	t_env	env;
+	int		fd;
 
-	change_flag = 0;
-	keycode == ESC ? exit(0) : 0;
-	keycode == A && ++change_flag ? (env->angle_y = (env->angle_y + 5) % 360) : 0;
-	keycode == D && ++change_flag ? (env->angle_y = (env->angle_y - 5) % 360) : 0;
-	keycode == W && ++change_flag ? (env->angle_x = (env->angle_x - 5) % 360) : 0;
-	keycode == S && ++change_flag ? (env->angle_x = (env->angle_x + 5) % 360) : 0;
-	keycode == Q && ++change_flag ? (env->angle_z = (env->angle_z + 5) % 360) : 0;
-	keycode == E && ++change_flag ? (env->angle_z = (env->angle_z - 5) % 360) : 0;
-	change_flag ? draw_axis(env, WHITE) : 0;
-	change_flag ? draw(env) : 0;
-	return (0);
-}
-
-int		mouse_handle(int key, int x, int y, t_env *env)
-{
-	if (key == 4)
+	if (argc == 1 || argc > 2)
+		write(1, "usage: ./fdf file_name\n", 23);
+	else
 	{
-		env->seglen < 120 ? env->seglen += 1 : 0;
-		draw_axis(env, WHITE);
-		draw(env);
+		fd = open(argv[1], O_RDONLY);
+		if (fd == -1)
+			exit(show_invalid_file_error());
+		env = get_env(fd);
+		close(fd);
+		draw_axis(&env, WHITE);
+		draw(&env);
+		mlx_hook(env.window, 2, 0, handle_key_press, &env);
+		mlx_hook(env.window, 17, 0, (int (*)())&exit, &env);
+		mlx_mouse_hook(env.window, &mouse_handle, &env);
+		mlx_loop(env.mlx);
 	}
-	else if (key == 5)
-	{
-		env->seglen > 1 ? env->seglen -= 1 : 0;
-		draw_axis(env, WHITE);
-		draw(env);
-	}
-	return (0);
 }

@@ -4,7 +4,7 @@ CC		=	gcc
 
 CFLAGS 	=	-Wall
 
-SOURCE	= 	source/draw.c source/funcs_to_delete.c source/main.c source/mutate.c source/point.c source/point_row.c source/reading.c source/utils.c
+SOURCE	= 	source/draw.c source/error.c source/funcs_to_delete.c source/main.c source/mutate.c source/point.c source/point_row.c source/reading.c source/utils.c
 
 HEADERS	=	source/header.h
 

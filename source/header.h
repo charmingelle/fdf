@@ -60,13 +60,6 @@ typedef struct  s_env {
 
 t_point 		*get_point(double x, double y, double z, int color);
 
-int				handle_key_press(int keycode, t_env *env);
-
-t_point			**get_points_from_z_coords(t_env *env, char **z_coords,
-    int row_number);
-
-void			free_z_coords(char **z_coords);
-
 void			set_figure(int fd, t_env *env);
 
 void			add_point_row(t_point_row **point_row, t_point **points);
@@ -75,41 +68,21 @@ void			draw(t_env *env);
 
 t_point			get_modified_point(t_env *env, t_point *point);
 
-int				equal_points(t_point *a, t_point *b);
-
 int				is_point_in_pointset(t_point *point, t_point **pointset);
 
-double			get_z_index(t_point *start, t_point *end, double x, double y);
-
-t_env			get_env(int fd);
-
 void			move_point(t_point *point, double x_shift, double y_shift);
-
-void			center_figure(t_env *env);
-
-int				mouse_handle(int key, int x, int y, t_env *env);
-
-void            ft_swap(void **a, void **b);
-
-void			draw_triangle(t_env *env, t_point *a, t_point *b, t_point *c);
-
-void			draw_top_middle_half_triangle(t_env *env, t_point *top,
-    t_point *middle, t_point *bottom);
-
-void			draw_middle_bottom_half_triangle(t_env *env, t_point *top,
-    t_point *middle, t_point *bottom);
-
-void			draw_segs_and_triags(t_env *env);
-
-void			draw_seg(t_env *env, t_point *p1, t_point *p2);
-
-int             count_x_on_seg(t_env *env, t_point *start, t_point *end, double y);
-
-t_z_buff_elem   **init_z_buff(t_env env);
 
 double          degree_to_rad(int degree);
 
 unsigned int	ft_atoi_hex_color(char *s);
+
+int             show_invalid_color_error(void);
+
+int				show_invalid_size_error(void);
+
+int				show_invalid_file_error(void);
+
+int				show_malloc_error(void);
 
 // funcs to delete
 
@@ -120,5 +93,3 @@ void			print_point_row(t_point_row *point_row);
 void			draw_axis(t_env *env, int color);
 
 void			print_cross(t_point **points);
-
-///
