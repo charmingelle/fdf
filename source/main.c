@@ -12,13 +12,29 @@
 
 #include "header.h"
 
+static double			ft_linear_interpolation(double a, double b, double t)
+{
+	return ((1 - t) * a + t * b);
+}
+
 static int				mouse_handle(int key, int x, int y, t_env *env)
 {
-	x = 0;
-	y = 0;
+	int	scroll_limit;
+
 	if (key == 4)
 	{
-		env->seglen < 120 ? env->seglen += 1 : 0;
+		env->shift_x = ft_linear_interpolation(env->shift_x, env->wwidth - x, 0.1);
+		env->shift_y = ft_linear_interpolation(env->shift_y, env->wheight - y, 0.1);
+		// env->shift_x = ft_linear_interpolation(env->shift_x, env->wwidth - (x / 2), 1 / env->seglen);
+		// env->shift_y = ft_linear_interpolation(env->shift_y, env->wheight - (y / 2), 1 / env->seglen);
+		// env->shift_x = ((env->wwidth / 2) - x * (1 / env->seglen));
+		// env->shift_y = ((env->wheight / 2) - y * (1 / env->seglen));
+		// env->shift_x = (env->wwidth - x) * (1 / env->seglen);
+		// env->shift_y = (env->wheight - y) * (1 / env->seglen);
+		// env->shift_x = (env->wwidth - x * (1 / env->seglen));
+		// env->shift_y = (env->wheight - y * (1 / env->seglen));
+		scroll_limit = fmax(env->wwidth, env->wheight);
+		env->seglen < scroll_limit ? env->seglen += 1 : 0;
 		draw(env);
 	}
 	else if (key == 5)
@@ -32,8 +48,10 @@ static int				mouse_handle(int key, int x, int y, t_env *env)
 static int				handle_key_press(int keycode, t_env *env)
 {
 	int	change_flag;
+	int shift;
 
 	change_flag = 0;
+	shift = env->seglen / 4;
 	keycode == ESC ? exit(0) : 0;
 	keycode == A && ++change_flag ? (env->ang_y = (env->ang_y + 5) % 360) : 0;
 	keycode == D && ++change_flag ? (env->ang_y = (env->ang_y - 5) % 360) : 0;
@@ -41,10 +59,10 @@ static int				handle_key_press(int keycode, t_env *env)
 	keycode == S && ++change_flag ? (env->ang_x = (env->ang_x + 5) % 360) : 0;
 	keycode == Q && ++change_flag ? (env->ang_z = (env->ang_z + 5) % 360) : 0;
 	keycode == E && ++change_flag ? (env->ang_z = (env->ang_z - 5) % 360) : 0;
-	keycode == ARROW_LEFT && ++change_flag ? (env->shift_x -= 5) : 0;	
-	keycode == ARROW_RIGHT && ++change_flag ? (env->shift_x += 5) : 0;
-	keycode == ARROW_UP && ++change_flag ? (env->shift_y -= 5) : 0;
-	keycode == ARROW_DOWN && ++change_flag ? (env->shift_y += 5) : 0;
+	keycode == ARROW_LEFT && ++change_flag ? (env->shift_x -= shift) : 0;	
+	keycode == ARROW_RIGHT && ++change_flag ? (env->shift_x += shift) : 0;
+	keycode == ARROW_UP && ++change_flag ? (env->shift_y -= shift) : 0;
+	keycode == ARROW_DOWN && ++change_flag ? (env->shift_y += shift) : 0;
 	change_flag ? draw(env) : 0;
 	return (0);
 }
@@ -105,8 +123,8 @@ static t_env			get_env(int fd, int serf)
 	env.ang_x = 0;
 	env.ang_y = 0;
 	env.ang_z = 0;
-	env.shift_x = 0;
-	env.shift_y = 0;
+	env.shift_x = env.wwidth / 2;
+	env.shift_y = env.wheight / 2;
 	env.serf = serf;
 	return (env);
 }
