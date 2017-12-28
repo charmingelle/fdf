@@ -20,8 +20,8 @@
 # include <math.h>
 # include <stdio.h>
 
+# define BASIC_COLOR 0xFFFFFF
 # define WHITE 0xAAAAAA
-# define BASIC_COLOR 0xAAAAAA
 # define BLACK 0x000000
 # define GREEN 0x008000
 # define RED 0xFF0000
@@ -29,6 +29,7 @@
 # define BLUE 0x0000FF
 # define YELLOW 0xFFFF00
 # define COLOR_OF_ONES 0xFFFFFF
+# define TEST 0xAABBCC
 
 # define ESC 53
 # define W 13
@@ -44,8 +45,8 @@
 
 typedef struct	s_z_buff_elem
 {
-	double			z;
-	unsigned int	color;
+	double		z;
+	int			color;
 }				t_z_buff_elem;
 
 typedef struct	s_point
@@ -77,7 +78,7 @@ typedef struct	s_env {
 	int				shift_y;
 	double			seglen;
 	t_z_buff_elem	**z_buff;
-	int				bonus;
+	int				serf;
 }				t_env;
 
 t_point			*get_point(double x, double y, double z, int color);

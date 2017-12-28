@@ -12,33 +12,37 @@
 
 #include "header.h"
 
-static unsigned int	get_r(unsigned int color)
+static int	get_r(int color)
 {
 	return (color / 0x10000);
 }
 
-static unsigned int	get_g(unsigned int color)
+static int	get_g(int color)
 {
-	return (color / 0x100);
+	return ((color - (color / 0x10000) * 0x10000) / 0x100);
 }
 
-static unsigned int	get_b(unsigned int color)
+static int	get_b(int color)
 {
-	return (color % 0x10000);
+	return (color % 0x100);
 }
 
-static unsigned int	get_mid_color(unsigned int start, unsigned int end, double t)
+static int	get_mid_color(int start, int end, double to_pass, double passed)
 {
-	unsigned int	mid;
-	unsigned int	r;
-	unsigned int	g;
-	unsigned int	b;
+	int				r;
+	int				g;
+	int				b;
+	double			r_step;
+	double			g_step;
+	double			b_step;
 
-	r = (get_r(end) - get_r(start)) * t + get_r(start);
-	g = (get_g(end) - get_g(start)) * t + get_g(start);
-	b = (get_b(end) - get_b(start)) * t + get_b(start);
-	mid = r * 0x10000 + g * 0x100 + b;
-	return (mid);
+	r_step = (get_r(end) - get_r(start)) / to_pass;
+	g_step = (get_g(end) - get_g(start)) / to_pass;
+	b_step = (get_b(end) - get_b(start)) / to_pass;	
+	r = get_r(start) + (r_step * passed);
+	g = get_g(start) + (g_step * passed);
+	b = get_b(start) + (b_step * passed);
+	return (r * 0x10000 + g * 0x100 + b);
 }
 
 static void			draw_seg(t_env *env, t_point *p1, t_point *p2)
@@ -60,7 +64,7 @@ static void			draw_seg(t_env *env, t_point *p1, t_point *p2)
 			&& (!env->z_buff[y][x].color || z > env->z_buff[y][x].z))
 		{
 			env->z_buff[y][x] = (t_z_buff_elem){.z = z,
-				.color = get_mid_color(p1->color, p2->color, t)};
+				.color = get_mid_color(p1->color, p2->color, (1 / step), (t / step))};
 			mlx_pixel_put(env->mlx, env->window, x, y,
 				env->z_buff[y][x].color);
 		}
@@ -83,11 +87,11 @@ static void			draw_mid_bot_triang(t_env *env, t_point *top,
 		temp1.x = (mid->x - bot->x) * t + bot->x;
 		temp1.y = (mid->y - bot->y) * t + bot->y;
 		temp1.z = (mid->z - bot->z) * t + bot->z;
-		temp1.color = (mid->color - bot->color) * t + bot->color;
+		temp1.color = get_mid_color(bot->color, mid->color, (1 / step), (t / step));
 		temp2.x = (top->x - bot->x) * t + bot->x;
 		temp2.y = (top->y - bot->y) * t + bot->y;
 		temp2.z = (top->z - bot->z) * t + bot->z;
-		temp2.color = (top->color - bot->color) * t + bot->color;
+		temp2.color = get_mid_color(bot->color, top->color, (1 / step), (t / step));
 		draw_seg(env, &temp1, &temp2);
 		t += step;
 	}
@@ -108,11 +112,11 @@ static void			draw_top_mid_triang(t_env *env, t_point *top,
 		temp1.x = (mid->x - top->x) * t + top->x;
 		temp1.y = (mid->y - top->y) * t + top->y;
 		temp1.z = (mid->z - top->z) * t + top->z;
-		temp1.color = (mid->color - top->color) * t + top->color;
+		temp1.color = get_mid_color(top->color, mid->color, (1 / step), (t / step));
 		temp2.x = (bot->x - top->x) * t + top->x;
 		temp2.y = (bot->y - top->y) * t + top->y;
 		temp2.z = (bot->z - top->z) * t + top->z;
-		temp2.color = (bot->color - top->color) * t + top->color;
+		temp2.color = get_mid_color(top->color, bot->color, (1 / step), (t / step));
 		draw_seg(env, &temp1, &temp2);
 		t += step;
 	}
@@ -151,8 +155,8 @@ static void			draw_segs_and_triags(t_env *env)
 				draw_seg(env, &rect[1], &rect[2]);
 				draw_seg(env, &rect[2], &rect[3]);
 				draw_seg(env, &rect[3], &rect[0]);
-				env->bonus ? draw_triang(env, &rect[0], &rect[1], &rect[2]) : 0;
-				env->bonus ? draw_triang(env, &rect[0], &rect[3], &rect[2]) : 0;
+				env->serf ? draw_triang(env, &rect[0], &rect[1], &rect[2]) : 0;
+				env->serf ? draw_triang(env, &rect[0], &rect[3], &rect[2]) : 0;
 			}
 		ps = ps->next;
 	}

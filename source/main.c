@@ -87,14 +87,14 @@ static void				center_figure(t_env *env)
 	}
 }
 
-static t_env			get_env(int fd, int bonus)
+static t_env			get_env(int fd, int serf)
 {
 	t_env	env;
 
 	if (!(env.mlx = mlx_init()))
 		exit(1);
 	env.wwidth = 1200;
-	env.wheight = 1200;
+	env.wheight = 900;
 	env.seglen = 15;
 	if (!(env.window = mlx_new_window(env.mlx, env.wwidth, env.wheight,
 		"FDF")))
@@ -107,7 +107,7 @@ static t_env			get_env(int fd, int bonus)
 	env.ang_z = 0;
 	env.shift_x = 0;
 	env.shift_y = 0;
-	env.bonus = bonus;
+	env.serf = serf;
 	return (env);
 }
 
@@ -115,22 +115,22 @@ int						main(int argc, char **argv)
 {
 	t_env	env;
 	int		fd;
-	int		bonus;
+	int		serf;
 
-	if (argc == 1 || (argc == 3 && ft_strcmp(argv[1], "-b")) || argc > 3)
-		write(1, "usage: ./fdf [-b] file_name\n", 28);
+	if (argc == 1 || (argc == 3 && ft_strcmp(argv[1], "-s")) || argc > 3)
+		write(1, "usage: ./fdf [-s] file_name\n", 28);
 	else
 	{
-		bonus = 0;
+		serf = 0;
 		if (argc == 2)
 			fd = open(argv[1], O_RDONLY);
 		else
 		{
 			fd = open(argv[2], O_RDONLY);
-			bonus = 1;
+			serf = 1;
 		}
 		(fd == -1) ? exit(show_invalid_file_error()) : 0;
-		env = get_env(fd, bonus);
+		env = get_env(fd, serf);
 		close(fd);
 		draw(&env);
 		mlx_hook(env.window, 2, 0, handle_key_press, &env);
