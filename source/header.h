@@ -37,6 +37,10 @@
 # define D 2
 # define Q 12
 # define E 14
+# define ARROW_UP 126
+# define ARROW_DOWN 125
+# define ARROW_LEFT 123
+# define ARROW_RIGHT 124
 
 typedef struct	s_z_buff_elem
 {
@@ -69,6 +73,8 @@ typedef struct	s_env {
 	int				ang_x;
 	int				ang_y;
 	int				ang_z;
+	int				shift_x;
+	int				shift_y;
 	double			seglen;
 	t_z_buff_elem	**z_buff;
 	int				bonus;

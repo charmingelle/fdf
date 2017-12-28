@@ -41,6 +41,10 @@ static int				handle_key_press(int keycode, t_env *env)
 	keycode == S && ++change_flag ? (env->ang_x = (env->ang_x + 5) % 360) : 0;
 	keycode == Q && ++change_flag ? (env->ang_z = (env->ang_z + 5) % 360) : 0;
 	keycode == E && ++change_flag ? (env->ang_z = (env->ang_z - 5) % 360) : 0;
+	keycode == ARROW_LEFT && ++change_flag ? (env->shift_x -= 5) : 0;	
+	keycode == ARROW_RIGHT && ++change_flag ? (env->shift_x += 5) : 0;
+	keycode == ARROW_UP && ++change_flag ? (env->shift_y -= 5) : 0;
+	keycode == ARROW_DOWN && ++change_flag ? (env->shift_y += 5) : 0;
 	change_flag ? draw(env) : 0;
 	return (0);
 }
@@ -101,6 +105,8 @@ static t_env			get_env(int fd, int bonus)
 	env.ang_x = 0;
 	env.ang_y = 0;
 	env.ang_z = 0;
+	env.shift_x = 0;
+	env.shift_y = 0;
 	env.bonus = bonus;
 	return (env);
 }

@@ -29,9 +29,9 @@ t_point	get_modified_point(t_env *env, t_point *point)
 	p1.z = p0.z * cos(degree_to_rad(env->ang_y)) + p0.x
 		* sin(degree_to_rad(env->ang_y));
 	rotated.x = (p1.x * cos(degree_to_rad(env->ang_z)) + p1.y
-		* sin(degree_to_rad(env->ang_z))) + (env->wwidth / 2);
+		* sin(degree_to_rad(env->ang_z))) + (env->wwidth / 2) + env->shift_x;
 	rotated.y = (p1.y * cos(degree_to_rad(env->ang_z)) - p1.x
-		* sin(degree_to_rad(env->ang_z))) + (env->wheight / 2);
+		* sin(degree_to_rad(env->ang_z))) + (env->wheight / 2) + env->shift_y;
 	rotated.z = p1.z;
 	rotated.color = point->color;
 	return (rotated);
