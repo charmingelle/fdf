@@ -16,7 +16,6 @@
 # include "../minilibx_macos/mlx.h"
 # include "../libft/libft.h"
 # include <math.h>
-# include <stdio.h>
 
 # define BASIC_COLOR 0xFFFFFF
 
