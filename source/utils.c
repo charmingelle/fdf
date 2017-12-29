@@ -39,6 +39,8 @@ unsigned int		get_color(char *s)
 	i = 1;
 	while (s[++i])
 		result = result * 16 + hex_to_digit(s[i]);
+	if (result > 0xFFFFFF)
+		exit(show_invalid_color_error());	
 	return (result);
 }
 
