@@ -5,45 +5,14 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: grevenko <grevenko@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2017/12/18 14:11:15 by grevenko          #+#    #+#             */
-/*   Updated: 2017/12/22 13:24:51 by grevenko         ###   ########.fr       */
+/*   Created: 2017/12/29 14:43:20 by grevenko          #+#    #+#             */
+/*   Updated: 2017/12/29 14:46:22 by grevenko         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "header.h"
 
-static int	get_r(int color)
-{
-	return (color / 0x10000);
-}
-
-static int	get_g(int color)
-{
-	return ((color - (color / 0x10000) * 0x10000) / 0x100);
-}
-
-static int	get_b(int color)
-{
-	return (color % 0x100);
-}
-
-static int	get_mid_color(int start, int end, double to_pass, double passed)
-{
-	int		r;
-	int		g;
-	int		b;
-	double	rgb_steps[3];
-
-	rgb_steps[0] = (get_r(end) - get_r(start)) / to_pass;
-	rgb_steps[1] = (get_g(end) - get_g(start)) / to_pass;
-	rgb_steps[2] = (get_b(end) - get_b(start)) / to_pass;
-	r = get_r(start) + (rgb_steps[0] * passed);
-	g = get_g(start) + (rgb_steps[1] * passed);
-	b = get_b(start) + (rgb_steps[2] * passed);
-	return (r * 0x10000 + g * 0x100 + b);
-}
-
-static void			draw_seg(t_env *env, t_point *p1, t_point *p2)
+static void	draw_seg(t_env *env, t_point *p1, t_point *p2)
 {
 	double	step;
 	double	t;
@@ -71,7 +40,7 @@ static void			draw_seg(t_env *env, t_point *p1, t_point *p2)
 	}
 }
 
-static void			draw_mid_bot_triang(t_env *env, t_point *top,
+static void	draw_mid_bot_triang(t_env *env, t_point *top,
 	t_point *mid, t_point *bot)
 {
 	t_point	temp1;
@@ -98,7 +67,7 @@ static void			draw_mid_bot_triang(t_env *env, t_point *top,
 	}
 }
 
-static void			draw_top_mid_triang(t_env *env, t_point *top,
+static void	draw_top_mid_triang(t_env *env, t_point *top,
 	t_point *mid, t_point *bot)
 {
 	t_point	temp1;
@@ -125,7 +94,7 @@ static void			draw_top_mid_triang(t_env *env, t_point *top,
 	}
 }
 
-static void			draw_triang(t_env *env, t_point *a, t_point *b, t_point *c)
+static void	draw_triang(t_env *env, t_point *a, t_point *b, t_point *c)
 {
 	t_point	p[3];
 
@@ -137,7 +106,7 @@ static void			draw_triang(t_env *env, t_point *a, t_point *b, t_point *c)
 	p[1].y != p[2].y ? draw_mid_bot_triang(env, &p[0], &p[1], &p[2]) : 0;
 }
 
-static void			draw_segs_and_triags(t_env *env)
+void		draw_segs_and_triags(t_env *env)
 {
 	t_point_row	*ps;
 	int			i;
@@ -163,11 +132,4 @@ static void			draw_segs_and_triags(t_env *env)
 			}
 		ps = ps->next;
 	}
-}
-
-void				draw(t_env *env)
-{
-	clear_z_buffer(env);
-	mlx_clear_window(env->mlx, env->window);
-	draw_segs_and_triags(env);
 }

@@ -1,10 +1,22 @@
+# **************************************************************************** #
+#                                                                              #
+#                                                         :::      ::::::::    #
+#    Makefile                                           :+:      :+:    :+:    #
+#                                                     +:+ +:+         +:+      #
+#    By: grevenko <grevenko@student.42.fr>          +#+  +:+       +#+         #
+#                                                 +#+#+#+#+#+   +#+            #
+#    Created: 2017/12/29 14:38:04 by grevenko          #+#    #+#              #
+#    Updated: 2017/12/29 14:46:59 by grevenko         ###   ########.fr        #
+#                                                                              #
+# **************************************************************************** #
+
 NAME	=	fdf
 
 CC		=	gcc
 
 CFLAGS 	=	-Wall -Wextra -Werror
 
-SOURCE	= 	source/draw.c source/error.c source/funcs_to_delete.c source/main.c source/mutate.c source/point.c source/point_row.c source/reading.c source/utils.c
+SOURCE	= 	source/color.c source/draw.c source/error.c source/event_handlers.c source/main.c source/mutate.c source/point_row.c source/point.c source/reading.c source/utils.c
 
 HEADERS	=	source/header.h
 

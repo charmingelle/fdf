@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   draw.c                                             :+:      :+:    :+:   */
+/*   header.h                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: grevenko <grevenko@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2017/12/18 14:11:15 by grevenko          #+#    #+#             */
-/*   Updated: 2017/12/22 13:24:51 by grevenko         ###   ########.fr       */
+/*   Created: 2017/12/29 14:43:20 by grevenko          #+#    #+#             */
+/*   Updated: 2017/12/29 14:46:30 by grevenko         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,15 +19,6 @@
 # include <stdio.h>
 
 # define BASIC_COLOR 0xFFFFFF
-# define WHITE 0xAAAAAA
-# define BLACK 0x000000
-# define GREEN 0x008000
-# define RED 0xFF0000
-# define LIME 0x00FF00
-# define BLUE 0x0000FF
-# define YELLOW 0xFFFF00
-# define COLOR_OF_ONES 0xFFFFFF
-# define TEST 0xAABBCC
 
 # define ESC 53
 # define W 13
@@ -109,14 +100,13 @@ void			sort(t_point *array);
 
 void			clear_z_buffer(t_env *env);
 
-// funcs to delete
+int				mouse_handle(int key, int x, int y, t_env *env);
 
-void			print_point(t_point *point);
+int				handle_key_press(int keycode, t_env *env);
 
-void			print_point_row(t_point_row *point_row);
+int				get_mid_color(int start, int end, double to_pass,
+double passed);
 
-void			draw_axis(t_env *env, int color);
-
-void			print_cross(t_point **points);
+void			draw_segs_and_triags(t_env *env);
 
 #endif
